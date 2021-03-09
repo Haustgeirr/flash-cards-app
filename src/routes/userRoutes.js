@@ -1,52 +1,62 @@
 const express = require('express');
+const passport = require('passport');
 
 const User = require('../models/userModel');
+const { createNewUser } = require('../repos/userRepo');
 const userAuth = require('../middleware/userAuth');
+const issueToken = require('../services/passport');
+const { apiConfig } = require('../config');
 
 const userRouter = express.Router();
 
-userRouter.post('/', async (req, res) => {
-  const user = new User(req.body);
-
+userRouter.post('/signup', async (req, res) => {
   try {
-    const token = await user.generateAuthToken();
+    const user = await createNewUser(req.body);
 
-    res.status(201).send({ user, token });
+    res.status(201).send({ user });
   } catch (error) {
     res.status(400).send(error);
   }
 });
 
-userRouter.get('/profile', userAuth, async (req, res) => {
-  res.send(req.user);
-});
+userRouter.post(
+  '/login',
+  passport.authenticate('local', {
+    // failureRedirect: '/',
+  }),
+  (req, res, next) => {
+    if (!req.body.remember_me) {
+      return next();
+    }
 
-userRouter.post('/login', async (req, res) => {
-  try {
-    const user = await User.findByCredentials(
-      req.body.email,
-      req.body.password
-    );
+    issueToken(req.user, (err, token) => {
+      if (err) {
+        return next(err);
+      }
 
-    const token = await user.generateAuthToken();
+      res.cookie('remember_me', token, {
+        path: '/',
+        httpOnly: true,
+        maxAge: apiConfig.rememberMeCookieMaxAge,
+      });
 
-    res.send({ user, token });
-  } catch (error) {
-    res.status(400).send();
+      return next();
+    });
+  },
+  (req, res) => {
+    // res.redirect(`${apiConfig.baseUrl}/users/me`);
+    res.send(req.user);
   }
-});
+);
 
 userRouter.post('/logout', userAuth, async (req, res) => {
-  try {
-    req.user.tokens = req.user.tokens.filter((token) => {
-      return token.token !== req.token;
-    });
+  req.logout();
+  res.clearCookie('remember_me');
+  res.send();
+});
 
-    await req.user.save();
-    res.send();
-  } catch (error) {
-    res.status(500).send();
-  }
+userRouter.get('/me', userAuth, async (req, res) => {
+  res.send(req.user);
 });
 
 module.exports = userRouter;
