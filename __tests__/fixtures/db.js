@@ -7,8 +7,8 @@ const userOneId = mongoose.Types.ObjectId();
 const userOne = {
   _id: userOneId,
   name: 'Test User One',
-  email: 'testUserOne@test.com',
-  password: 'test-test-test',
+  email: 'testone@test.com',
+  password: '12345678',
   tokens: [
     {
       token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET),

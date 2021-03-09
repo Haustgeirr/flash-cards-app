@@ -30,14 +30,10 @@ const userSchema = new mongoose.Schema(
       minLength: [8, 'Password must be 8 characters or longer'],
       trim: true,
     },
-    tokens: [
-      {
-        token: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+    rememberMeToken: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,
@@ -46,24 +42,18 @@ const userSchema = new mongoose.Schema(
 
 userSchema.methods.toJSON = function () {
   const user = this;
-  const userObject = user.toObject();
+  const userJson = {
+    _id: user._id,
+    name: user.name,
+  };
 
-  delete userObject.name;
-  delete userObject.email;
-  delete userObject.password;
-  delete userObject.tokens;
-
-  return userObject;
+  return userJson;
 };
 
-userSchema.methods.generateAuthToken = async function () {
+userSchema.methods.verifyPassword = async function (password) {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, jwtToken);
-
-  user.tokens = user.tokens.concat({ token });
-  await user.save();
-
-  return token;
+  const passwordsDoMatch = await bcrypt.compare(password, user.password);
+  return passwordsDoMatch;
 };
 
 userSchema.statics.findByCredentials = async (email, password) => {
