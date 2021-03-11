@@ -59,4 +59,25 @@ userRouter.get('/me', userAuth, async (req, res) => {
   res.send(req.user);
 });
 
+userRouter.get(
+  '/current_user',
+  function (req, res, next) {
+    // console.log('get current_user');
+
+    const isAuth = req.isAuthenticated();
+
+    console.log('GET current_user.isAuth', isAuth);
+    if (req.isAuthenticated()) {
+      return next();
+    }
+
+    // console.log('get current_user - isAuth: false');
+    res.status(200).end();
+  },
+  (req, res) => {
+    // console.log('GET current_user.next', req.user);
+    res.send({ user: { id: req.user._id, name: req.user.name } });
+  }
+);
+
 module.exports = userRouter;

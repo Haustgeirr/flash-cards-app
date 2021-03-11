@@ -5,6 +5,7 @@ const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo').default;
+const path = require('path');
 
 const { apiConfig } = require('./config');
 const v1Router = require('./api/v1');

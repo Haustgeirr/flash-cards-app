@@ -79,7 +79,6 @@ const consumeRememberMeToken = (token, fn) => {
     if (!user) {
       return fn();
     }
-    console.log('consumeToken', user);
     setRememberMeToken(user, '');
 
     return fn(null, user._id);

@@ -1,0 +1,7 @@
+.hello {
+  color: red;
+}
+
+@tailwind base;
+@tailwind container;
+@tailwind utilities;
