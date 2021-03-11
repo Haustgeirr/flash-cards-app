@@ -1,78 +1,71 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-import login from '../api/login';
+import * as actionCreators from '../redux/actionCreators';
+import { login } from '../api/users';
 
-class LoginPanel extends React.Component {
-  constructor(props) {
-    super(props);
+function LoginPanel(props) {
+  const history = useHistory();
+  const location = useLocation();
 
-    this.onInputChange = this.onInputChange.bind(this);
-    this.onLoginSubmit = this.onLoginSubmit.bind(this);
-  }
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
 
-  onInputChange(event) {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-    });
-  }
-
-  onLoginSubmit = async (event) => {
+  const onLoginSubmit = async (event) => {
     event.preventDefault();
 
-    const response = await login.post('/users/login', {
-      email: this.state.email,
-      password: this.state.password,
-    });
+    const user = await login(email, password, rememberMe);
+    props.userLogin(user);
 
-    this.props.onLoginSuccess({
-      _id: response.data.user._id,
-      token: response.data.token,
-    });
+    const { from } = location.state || { from: { pathname: '/' } };
+    history.replace(from);
   };
 
-  render() {
-    return (
-      <div className='login-panel'>
-        <div className='credentials-container'>
-          <form
-            className='login-form'
-            method='POST'
-            onSubmit={this.onLoginSubmit}
-          >
-            <input
-              type='text'
-              name='email'
-              id='email'
-              autoCorrect='off'
-              spellCheck='false'
-              autoCapitalize='off'
-              autoFocus='autofocus'
-              placeholder='Enter email'
-              value={this.email}
-              autoComplete='off'
-              inputMode='email'
-              onChange={this.onInputChange}
-            />
-            <input
-              type='password'
-              name='password'
-              value={this.password}
-              id='password'
-              className='form-field'
-              placeholder='Enter password'
-              autoComplete='off'
-              onChange={this.onInputChange}
-            />
-            <input type='submit' id='login' value='Log in' />
-          </form>
-        </div>
+  return (
+    <div className='login-panel'>
+      <div className='credentials-container'>
+        <form className='login-form' method='POST' onSubmit={onLoginSubmit}>
+          <input
+            type='text'
+            name='email'
+            id='email'
+            autoCorrect='off'
+            spellCheck='false'
+            autoCapitalize='off'
+            autoFocus='autofocus'
+            placeholder='Enter email'
+            value={props.email}
+            autoComplete='off'
+            inputMode='email'
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type='password'
+            name='password'
+            value={props.password}
+            id='password'
+            className='form-field'
+            placeholder='Enter password'
+            autoComplete='off'
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <input
+            type='checkbox'
+            name='remember-me'
+            value={props.rememberMe}
+            id='remember-me'
+            className=''
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
+          <input type='submit' id='login' value='Log in' />
+        </form>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-export default LoginPanel;
+export default connect(null, { userLogin: actionCreators.userLogin })(
+  LoginPanel
+);
