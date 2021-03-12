@@ -1,7 +1,3 @@
-.hello {
-  color: red;
-}
-
 @tailwind base;
-@tailwind container;
+@tailwind components;
 @tailwind utilities;
