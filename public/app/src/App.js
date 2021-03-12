@@ -7,7 +7,7 @@ import AuthenticatedRoute from './router/AuthenticatedRoute';
 import './css/main.css';
 
 const IndexPage = React.lazy(() => import('./pages/index'));
-const LoginPage = React.lazy(() => import('./pages/login'));
+const SignInPage = React.lazy(() => import('./pages/signin'));
 const DashboardPage = React.lazy(() => import('./pages/dashboard'));
 
 class App extends React.Component {
@@ -17,8 +17,9 @@ class App extends React.Component {
         <Router>
           <Switch>
             <Route path='/' exact component={IndexPage} />
-            <Route path='/login' component={LoginPage} />
+            <Route path='/signin' component={SignInPage} />
             <AuthenticatedRoute path='/dashboard' component={DashboardPage} />
+            {/* <Route path='/dashboard' component={DashboardPage} /> */}
           </Switch>
         </Router>
       </Suspense>
