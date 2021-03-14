@@ -9,11 +9,18 @@ const initialState = {
 export default function user(state = initialState, action) {
   switch (action.type) {
     case actions.USER_LOGIN: {
-      const { user } = action.payload;
       return {
         ...state,
-        user,
+        user: action.user,
         isAuthenticated: true,
+      };
+    }
+    case actions.USER_LOGOUT: {
+      return {
+        ...state,
+        user: {},
+        isAuthenticated: false,
+        isGettingUserAuth: false,
       };
     }
     case actions.GETTING_USER_AUTH: {

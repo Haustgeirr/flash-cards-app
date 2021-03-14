@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import * as actionCreators from '../redux/actionCreators';
 import { login } from '../api/users';
 
-function SignInForm(props) {
+const SignInForm = (props) => {
   const history = useHistory();
   const location = useLocation();
 
@@ -16,11 +16,13 @@ function SignInForm(props) {
   const onLoginSubmit = async (event) => {
     event.preventDefault();
 
-    const user = await login(email, password, rememberMe);
-    props.userLogin(user);
+    try {
+      const user = await login(email, password, rememberMe);
+      props.userLogin(user);
 
-    const { from } = location.state || { from: { pathname: '/dashboard' } };
-    history.replace(from);
+      const { from } = location.state || { from: { pathname: '/dashboard' } };
+      history.replace(from);
+    } catch (error) {}
   };
 
   return (
@@ -37,10 +39,9 @@ function SignInForm(props) {
           </h2>
         </div>
         <form className='mt-8 space-y-6' method='POST' onSubmit={onLoginSubmit}>
-          <input type='hidden' name='remember' value='true' />
           <div className='rounded-md shadow-sm -space-y-px'>
             <div>
-              <label for='email-address' class='sr-only'>
+              <label htmlFor='email' className='sr-only'>
                 Email address
               </label>
               <input
@@ -53,7 +54,7 @@ function SignInForm(props) {
                 autoCapitalize='off'
                 autoFocus='autofocus'
                 placeholder='Email'
-                value={props.email}
+                value={email}
                 autoComplete='off'
                 inputMode='email'
                 className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded-t-md focus:outline-none focus:ring-4 focus:ring-gray-500 focus:border-gray-500 focus:ring-opacity-20 focus:z-10 sm:text-sm'
@@ -61,14 +62,14 @@ function SignInForm(props) {
               />
             </div>
             <div>
-              <label for='password' class='sr-only'>
+              <label htmlFor='password' className='sr-only'>
                 Password
               </label>
               <input
                 id='password'
                 name='password'
                 type='password'
-                value={props.password}
+                value={password}
                 placeholder='Password'
                 autoComplete='off'
                 required
@@ -82,28 +83,31 @@ function SignInForm(props) {
               <input
                 type='checkbox'
                 name='remember-me'
-                value={props.rememberMe}
+                value={rememberMe}
                 id='remember-me'
                 className='h-4 w-4 text-gray-900 focus:ring-indigo-500 border-gray-300 rounded'
                 onChange={(e) => setRememberMe(e.target.checked)}
               />
-              <label for='remember_me' class='ml-2 block text-sm text-gray-900'>
+              <label
+                htmlFor='remember_me'
+                className='ml-2 block text-sm text-gray-900'
+              >
                 Remember me
               </label>
             </div>
             <div className='text-sm'>
-              <a
-                href='#'
+              <Link
+                to='/'
                 className='underline text-gray-600 hover:text-gray-500'
               >
                 Forgot your password?
-              </a>
+              </Link>
             </div>
           </div>
           <div>
             <button
               type='submit'
-              className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+              className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800'
             >
               <span className='absolute left-0 inset-y-0 flex items-center pl-3'>
                 <svg
@@ -114,9 +118,9 @@ function SignInForm(props) {
                   aria-hidden='true'
                 >
                   <path
-                    fill-rule='evenodd'
+                    fillRule='evenodd'
                     d='M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z'
-                    clip-rule='evenodd'
+                    clipRule='evenodd'
                   />
                 </svg>
               </span>
@@ -147,7 +151,7 @@ function SignInForm(props) {
       </div>
     </div>
   );
-}
+};
 
 export default connect(null, { userLogin: actionCreators.userLogin })(
   SignInForm

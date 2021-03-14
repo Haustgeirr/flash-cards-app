@@ -1,10 +1,13 @@
 const User = require('../models/userModel');
 
 const createNewUser = async (user) => {
-  const userDocument = new User(user);
+  const userDocument = new User({
+    name: user.name,
+    email: user.username,
+    password: user.password,
+  });
 
-  await userDocument.save();
-  return userDocument;
+  return await userDocument.save();
 };
 
 const findById = async (id) => {

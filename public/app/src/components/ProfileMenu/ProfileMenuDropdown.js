@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ProfileMenuLink from './ProfileMenuLink';
+
+import SignOutLink from '../SignOutLink';
 
 const ProfileMenuDropdown = (props) => {
   return (
@@ -15,7 +16,7 @@ const ProfileMenuDropdown = (props) => {
         <br />
         <strong>User Placeholder</strong>
       </Link>
-      <ProfileMenuLink href='/logout' text='Sign out' />
+      <SignOutLink />
     </div>
   );
 };

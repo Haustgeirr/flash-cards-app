@@ -2,9 +2,7 @@ import * as actions from './actions';
 
 const userLogin = (user) => ({
   type: actions.USER_LOGIN,
-  payload: {
-    user,
-  },
+  user,
 });
 
 const userLogout = () => ({
