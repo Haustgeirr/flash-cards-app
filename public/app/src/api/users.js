@@ -15,13 +15,17 @@ export const signup = async (name, username, password) => {
 };
 
 export const login = async (username, password, remember_me) => {
-  const res = await baseUrl.post('/users/login', {
-    username,
-    password,
-    remember_me,
-  });
+  try {
+    const res = await baseUrl.post('/users/login', {
+      username,
+      password,
+      remember_me,
+    });
 
-  return res.data;
+    return res.data;
+  } catch (error) {
+    return { error: 'These credentials do not match our records' };
+  }
 };
 
 export const getCurrentUser = async () => {

@@ -1,16 +1,14 @@
 import React from 'react';
 
-import NavBar from '../components/NavBar/NavBar';
+import NavBar from '../components/navBar/NavBar';
 
-class DashboardPage extends React.Component {
-  render() {
-    return (
-      <div>
-        <NavBar />
-        Dashboard
-      </div>
-    );
-  }
-}
+const DashboardPage = () => {
+  return (
+    <div>
+      <NavBar />
+      Dashboard
+    </div>
+  );
+};
 
 export default DashboardPage;
