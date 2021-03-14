@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const SignoutPage = () => {
+const SignedOutPage = () => {
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
       <div className='max-w-md w-full py-12 px-6 space-y-8'>
@@ -24,4 +24,4 @@ const SignoutPage = () => {
   );
 };
 
-export default SignoutPage;
+export default SignedOutPage;
