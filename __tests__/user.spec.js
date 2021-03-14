@@ -20,8 +20,8 @@ describe('POST / Create User tests', () => {
     await request(app)
       .post('/api/v1/users/signup')
       .send({
-        name: 'Jest User',
-        email: 'jest@test.com',
+        name: 'Jest',
+        username: 'jest@test.com',
         password: '12345678',
       })
       .expect(201);
@@ -31,50 +31,50 @@ describe('POST / Create User tests', () => {
     const response = await request(app)
       .post('/api/v1/users/signup')
       .send({
-        email: 'jest@test.com',
-        password: 'test-test-test',
+        username: 'jest@test.com',
+        password: '12345678',
       })
       .expect(400);
   });
 
-  test('Should receive a 400 status if no User email', async () => {
+  test('Should receive a 400 status if no username', async () => {
     const response = await request(app)
       .post('/api/v1/users/signup')
       .send({
-        name: 'Name',
-        email: '',
-        password: 'test-test-test',
+        name: 'Jest',
+        username: '',
+        password: '12345678',
       })
       .expect(400);
   });
 
-  test('Should receive a 400 status if User email is invalid', async () => {
+  test('Should receive a 400 status if User username is invalid', async () => {
     const response = await request(app)
       .post('/api/v1/users/signup')
       .send({
-        name: 'Name',
-        email: 'jest',
-        password: 'test-test-test',
+        name: 'Jest',
+        username: 'jest',
+        password: 'test-test-12345678',
       })
       .expect(400);
   });
 
-  test('Should receive a 400 status if email not unique', async () => {
+  test('Should receive a 400 status if username not unique', async () => {
     await request(app)
       .post('/api/v1/users/signup')
       .send({
-        name: 'Name',
-        email: 'jest@test.com',
-        password: 'test-test-test',
+        name: 'Jest',
+        username: 'jest@test.com',
+        password: '12345678',
       })
       .expect(201);
 
     await request(app)
       .post('/api/v1/users/signup')
       .send({
-        name: 'Name',
-        email: 'jest@test.com',
-        password: 'test-test-test',
+        name: 'jest',
+        username: 'jest@test.com',
+        password: '12345678',
       })
       .expect(400);
   });
@@ -83,8 +83,8 @@ describe('POST / Create User tests', () => {
     const response = await request(app)
       .post('/api/v1/users/signup')
       .send({
-        name: 'Name',
-        email: 'jest@test.com',
+        name: 'Jest',
+        username: 'jest@test.com',
       })
       .expect(400);
   });
@@ -93,9 +93,9 @@ describe('POST / Create User tests', () => {
     await request(app)
       .post('/api/v1/users/signup')
       .send({
-        name: 'Name',
-        email: 'jest@test.com',
-        password: 'test',
+        name: 'Jest',
+        username: 'jest@test.com',
+        password: '1234',
       })
       .expect(400);
   });
@@ -106,13 +106,13 @@ describe('POST / Create User tests', () => {
     const response = await request(app)
       .post('/api/v1/users/signup')
       .send({
-        name: 'Name',
-        email: 'jest@test.com',
+        name: 'Jest',
+        username: 'jest@test.com',
         password,
       })
       .expect(201);
 
-    const user = await User.findById(response.body.user._id);
+    const user = await User.findById(response.body.user.id);
     expect(user.password).not.toBe(password);
   });
 });

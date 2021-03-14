@@ -1,7 +1,6 @@
 const express = require('express');
 const passport = require('passport');
 
-const User = require('../models/userModel');
 const { createNewUser } = require('../repos/userRepo');
 const userAuth = require('../middleware/userAuth');
 const issueToken = require('../services/passport');
@@ -9,21 +8,28 @@ const { apiConfig } = require('../config');
 
 const userRouter = express.Router();
 
-userRouter.post('/signup', async (req, res) => {
-  try {
-    const user = await createNewUser(req.body);
+userRouter.post(
+  '/signup',
+  async (req, res, next) => {
+    try {
+      const user = await createNewUser(req.body);
+      res.locals.user = { user: { id: user._id, name: user.name } };
 
-    res.status(201).send({ user });
-  } catch (error) {
-    res.status(400).send(error);
+      return next();
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  },
+  passport.authenticate('local'),
+  (req, res) => {
+    const user = res.locals.user;
+    res.status(201).send(user);
   }
-});
+);
 
 userRouter.post(
   '/login',
-  passport.authenticate('local', {
-    // failureRedirect: '/',
-  }),
+  passport.authenticate('local'),
   (req, res, next) => {
     if (!req.body.remember_me) {
       return next();
@@ -44,8 +50,18 @@ userRouter.post(
     });
   },
   (req, res) => {
-    // res.redirect(`${apiConfig.baseUrl}/users/me`);
-    res.send(req.user);
+    try {
+      const user = {
+        user: {
+          id: req.user._id,
+          name: req.user.name,
+        },
+      };
+
+      res.status(200).send(user);
+    } catch (error) {
+      res.status(401).send(error);
+    }
   }
 );
 
@@ -62,20 +78,15 @@ userRouter.get('/me', userAuth, async (req, res) => {
 userRouter.get(
   '/current_user',
   function (req, res, next) {
-    // console.log('get current_user');
-
     const isAuth = req.isAuthenticated();
 
-    console.log('GET current_user.isAuth', isAuth);
     if (req.isAuthenticated()) {
       return next();
     }
 
-    // console.log('get current_user - isAuth: false');
     res.status(200).end();
   },
   (req, res) => {
-    // console.log('GET current_user.next', req.user);
     res.send({ user: { id: req.user._id, name: req.user.name } });
   }
 );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -14,7 +14,7 @@ const AuthenticatedRoute = ({ users, component: Component, ...rest }) => {
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
+              pathname: '/signin',
               state: { from: props.location },
             }}
           />
