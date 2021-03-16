@@ -112,7 +112,7 @@ describe('POST / Create User tests', () => {
       })
       .expect(201);
 
-    const user = await User.findById(response.body.user.id);
+    const user = await User.findById(response.body.id);
     expect(user.password).not.toBe(password);
   });
 });

@@ -11,7 +11,7 @@ const {
 } = require('../repos/userRepo');
 
 passport.serializeUser((user, done) => {
-  done(null, user._id);
+  done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {

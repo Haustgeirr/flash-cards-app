@@ -14,6 +14,10 @@ const SignUp = (props) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [isRedirecting, setRedirecting] = useState(false);
 
@@ -21,10 +25,34 @@ const SignUp = (props) => {
     event.preventDefault();
 
     try {
-      const user = await signup(name, email, password);
-      props.userLogin(user);
-      setRedirecting(true);
-    } catch (error) {}
+      const res = await signup(name, email, password);
+
+      if (res.error) {
+        if (res.error.field === 'name') {
+          setNameError(true);
+          setEmailError(false);
+          setPasswordError(false);
+        }
+        if (res.error.field === 'email') {
+          setNameError(false);
+          setEmailError(true);
+          setPasswordError(false);
+        }
+        if (res.error.field === 'password') {
+          setNameError(false);
+          setEmailError(false);
+          setPasswordError(true);
+        }
+        setErrorMessage(res.error.message);
+      }
+
+      if (res.data) {
+        props.userLogin(res.data.user);
+        setRedirecting(true);
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
   return (
@@ -52,14 +80,31 @@ const SignUp = (props) => {
               onChange={setName}
               required
               autoFocus
-              className='rounded-t-md'
+              className={
+                nameError ? 'rounded-t-md border-red-400 z-10' : 'rounded-t-md'
+              }
             />
-            <InputEmail value={email} onChange={setEmail} />
+            <InputEmail
+              value={email}
+              onChange={setEmail}
+              className={emailError && 'border-red-400 z-20'}
+            />
             <InputPassword
               value={password}
               onChange={setPassword}
-              className='rounded-b-md'
+              className={
+                passwordError
+                  ? 'rounded-b-md border-red-400 z-30'
+                  : 'rounded-b-md'
+              }
             />
+          </div>
+          <div className='space-y-2'>
+            {errorMessage && (
+              <div className='mt-2 text-center text-sm text-red-400'>
+                {errorMessage}
+              </div>
+            )}
           </div>
           <AccountSubmitButton text='Sign up for free' />
         </form>
@@ -74,7 +119,7 @@ const SignUp = (props) => {
               </span>
             </div>
           </div>
-          <div className='mt-6'>
+          <div className='mt-8'>
             <AccountSecondaryButton to='/signin' text='Sign in' />
           </div>
         </div>

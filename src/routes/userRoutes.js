@@ -1,85 +1,49 @@
 const express = require('express');
 const passport = require('passport');
 
-const { createNewUser } = require('../repos/userRepo');
-const userAuth = require('../middleware/userAuth');
-const issueToken = require('../services/passport');
-const { apiConfig } = require('../config');
+const { ensureAuthenticated, rememberMe } = require('../middleware/userAuth');
+const {
+  CreateUser,
+  LoginUser,
+  LogoutUser,
+} = require('../controllers/userController');
 
 const userRouter = express.Router();
 
 userRouter.post(
   '/signup',
-  async (req, res, next) => {
-    try {
-      const user = await createNewUser(req.body);
-      res.locals.user = { user: { id: user._id, name: user.name } };
-
-      return next();
-    } catch (error) {
-      res.status(400).send(error);
-    }
-  },
-  passport.authenticate('local'),
+  (req, res, next) => CreateUser(req, res, next),
   (req, res) => {
     const user = res.locals.user;
-    res.status(201).send(user);
+    req.login(user, (error) => {
+      if (error) {
+        res.status(401).send(error);
+      }
+      res.status(201).send(user);
+    });
   }
 );
 
 userRouter.post(
   '/login',
   passport.authenticate('local'),
-  (req, res, next) => {
-    if (!req.body.remember_me) {
-      return next();
-    }
-
-    issueToken(req.user, (err, token) => {
-      if (err) {
-        return next(err);
-      }
-
-      res.cookie('remember_me', token, {
-        path: '/',
-        httpOnly: true,
-        maxAge: apiConfig.rememberMeCookieMaxAge,
-      });
-
-      return next();
-    });
-  },
-  (req, res) => {
-    try {
-      const user = {
-        user: {
-          id: req.user._id,
-          name: req.user.name,
-        },
-      };
-
-      res.status(200).send(user);
-    } catch (error) {
-      res.status(401).send(error);
-    }
-  }
+  rememberMe,
+  (req, res) => LoginUser(req, res)
 );
 
-userRouter.post('/logout', userAuth, async (req, res) => {
-  req.logout();
-  res.clearCookie('remember_me');
-  res.send();
-});
+userRouter.post('/logout', ensureAuthenticated, (req, res) =>
+  LogoutUser(req, res)
+);
 
-userRouter.get('/me', userAuth, async (req, res) => {
+userRouter.get('/me', ensureAuthenticated, async (req, res) => {
   res.send(req.user);
 });
 
+// this is a special route that allows a soft failure for user auth
+// for when users arrive with out a valid session
 userRouter.get(
   '/current_user',
   function (req, res, next) {
-    const isAuth = req.isAuthenticated();
-
     if (req.isAuthenticated()) {
       return next();
     }

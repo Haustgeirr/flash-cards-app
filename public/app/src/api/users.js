@@ -5,13 +5,17 @@ export const baseUrl = axios.create({
 });
 
 export const signup = async (name, username, password) => {
-  const res = await baseUrl.post('/users/signup', {
-    name,
-    username,
-    password,
-  });
+  try {
+    const res = await baseUrl.post('/users/signup', {
+      name,
+      username,
+      password,
+    });
 
-  return res.data;
+    return res;
+  } catch (error) {
+    return { error: error.response.data };
+  }
 };
 
 export const login = async (username, password, remember_me) => {
