@@ -27,6 +27,19 @@ describe('POST / Create User tests', () => {
       .expect(201);
   });
 
+  test('Should receive user object on good signup', async () => {
+    const res = await request(app)
+      .post('/api/v1/users/signup')
+      .send({
+        name: 'Jest',
+        username: 'jest@test.com',
+        password: '12345678',
+      })
+      .expect(201);
+
+    expect(res.body.user).toBeDefined;
+  });
+
   test('Should receive a 400 if no user name', async () => {
     const response = await request(app)
       .post('/api/v1/users/signup')
@@ -133,6 +146,18 @@ describe('POST User Login / Logout', () => {
       .expect(200);
   });
 
+  test('Should receive user object on good login', async () => {
+    const res = await request(app)
+      .post('/api/v1/users/login')
+      .send({
+        username: userOne.email,
+        password: userOne.password,
+      })
+      .expect(200);
+
+    expect(res.body.user).toBeDefined;
+  });
+
   test('Should set a remember_me cookie when remember_me: true', async () => {
     let agent = request.agent(app);
 
@@ -185,7 +210,7 @@ describe('POST User Login / Logout', () => {
   });
 });
 
-describe('GET User authorization tests', () => {
+describe('GET /current_user auth tests', () => {
   beforeAll(async () => {
     await User.deleteMany();
     await new User(userOne).save();
@@ -202,7 +227,65 @@ describe('GET User authorization tests', () => {
       })
       .expect(200);
 
-    agent.get('/api/v1/users/me').send().expect(200);
+    await agent.get('/api/v1/users/current_user').send().expect(200);
+  });
+
+  test('Should receive user object if authorized', async () => {
+    let agent = request.agent(app);
+
+    await agent
+      .post('/api/v1/users/login')
+      .send({
+        username: userOne.email,
+        password: userOne.password,
+      })
+      .expect(200);
+
+    const res = await agent
+      .get('/api/v1/users/current_user')
+      .send()
+      .expect(200);
+
+    expect(res.body.user).toBeDefined;
+  });
+
+  test('Should receive 200 if unauthorized', async () => {
+    await request(app).get('/api/v1/users/current_user').send().expect(200);
+  });
+});
+
+describe('GET /me authorization tests', () => {
+  beforeAll(async () => {
+    await User.deleteMany();
+    await new User(userOne).save();
+  });
+
+  test('Should receive 200 if authorized', async () => {
+    let agent = request.agent(app);
+
+    await agent
+      .post('/api/v1/users/login')
+      .send({
+        username: userOne.email,
+        password: userOne.password,
+      })
+      .expect(200);
+
+    await agent.get('/api/v1/users/me').send().expect(200);
+  });
+
+  test('Should receive a user object if authorized', async () => {
+    let agent = request.agent(app);
+
+    const res = await agent
+      .post('/api/v1/users/login')
+      .send({
+        username: userOne.email,
+        password: userOne.password,
+      })
+      .expect(200);
+
+    expect(res.body.user).toBeDefined();
   });
 
   test('Should receive 401 if unauthorized', async () => {

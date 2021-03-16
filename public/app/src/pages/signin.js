@@ -34,9 +34,11 @@ const SignInPage = (props) => {
         throw new Error(res.error);
       }
 
-      props.userLogin(res);
-      const { from } = location.state || { from: { pathname: '/dashboard' } };
-      history.replace(from);
+      if (res.user) {
+        props.userLogin(res.user);
+        const { from } = location.state || { from: { pathname: '/dashboard' } };
+        history.replace(from);
+      }
     } catch (error) {
       setEmailError(true);
       setPasswordError(true);
