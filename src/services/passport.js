@@ -5,7 +5,7 @@ const RememberMeStrategy = require('passport-remember-me').Strategy;
 const randomString = require('../utils/utils');
 const {
   findById,
-  findByUsername,
+  findByEmail,
   findByToken,
   setRememberMeToken,
 } = require('../repos/userRepo');
@@ -16,29 +16,34 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => {
   findById(id).then((user) => {
-    done(null, user);
+    done(null, user.toJSON());
   });
 });
 
 passport.use(
-  new LocalStrategy(async (username, password, done) => {
-    findByUsername(username)
-      .then(async (user) => {
-        if (!user) {
-          return done(null, false, { error: 'Failed to login' });
-        }
+  new LocalStrategy(
+    {
+      usernameField: 'email',
+    },
+    async (username, password, done) => {
+      findByEmail(username)
+        .then(async (user) => {
+          if (!user) {
+            return done(null, false, { error: 'Failed to sign in' });
+          }
 
-        const passwordsDoMatch = await user.verifyPassword(password);
-        if (!passwordsDoMatch) {
-          return done(null, false);
-        }
+          const passwordsDoMatch = await user.verifyPassword(password);
+          if (!passwordsDoMatch) {
+            return done(null, false);
+          }
 
-        return done(null, user);
-      })
-      .catch((err) => {
-        return done(err);
-      });
-  })
+          return done(null, user);
+        })
+        .catch((err) => {
+          return done(err);
+        });
+    }
+  )
 );
 
 passport.use(
@@ -75,7 +80,7 @@ function issueToken(user, done) {
 }
 
 const consumeRememberMeToken = (token, fn) => {
-  const user = findByToken(token).then((user) => {
+  findByToken(token).then((user) => {
     if (!user) {
       return fn();
     }
