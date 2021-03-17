@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 
 const validator = require('validator');
+const { verifyPassword } = require('../models/userModel');
 
 const createNewUser = async ({ name, email, password }) => {
   if (!name) {
@@ -30,7 +31,7 @@ const createNewUser = async ({ name, email, password }) => {
     };
   }
 
-  const usernameExists = await findByUsername(email);
+  const usernameExists = await findByEmail(email);
 
   if (usernameExists) {
     return {
@@ -56,30 +57,66 @@ const createNewUser = async ({ name, email, password }) => {
     password,
   });
 
-  return await (await userDocument.save()).toJSON();
+  return await userDocument.save();
 };
 
 const findById = async (id) => {
   return await User.findById(id).exec();
 };
 
-const findByUsername = async (email) => {
+const findByEmail = async (email) => {
   return await User.findOne({ email }).exec();
+};
+
+const findAndUpdateUser = async (id, updates) => {
+  const updateKeys = Object.keys(updates);
+
+  if (updateKeys.length === 0) {
+    return {
+      error: {
+        message: `No updates received`,
+      },
+    };
+  }
+
+  const user = await User.findById(id).exec();
+
+  updateKeys.map((key) => {
+    user[key] = updates[key];
+  });
+
+  await user.save();
+  return user.toJSON();
 };
 
 const findByToken = async (token) => {
   return await User.findOne({ rememberMeToken: token }).exec();
 };
 
+const removeUser = async (id, password) => {
+  const user = await User.findById(id).exec();
+
+  const passwordsDoMatch = await user.verifyPassword(password);
+
+  if (!passwordsDoMatch) {
+    return { error: { field: 'password', message: 'Passwords do not match' } };
+  }
+
+  await user.remove();
+  return user.toJSON();
+};
+
 const setRememberMeToken = async (user, token) => {
   user.rememberMeToken = token;
-  user.save();
+  await user.save();
 };
 
 module.exports = {
   createNewUser,
   findById,
-  findByUsername,
+  findByEmail,
   findByToken,
+  findAndUpdateUser,
+  removeUser,
   setRememberMeToken,
 };

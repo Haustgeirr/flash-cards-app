@@ -6,6 +6,8 @@ const {
   CreateUser,
   LoginUser,
   LogoutUser,
+  UpdateUser,
+  DeleteUser,
 } = require('../controllers/userController');
 
 const userRouter = express.Router();
@@ -25,19 +27,27 @@ userRouter.post(
 );
 
 userRouter.post(
-  '/login',
+  '/signin',
   passport.authenticate('local'),
   rememberMe,
   (req, res) => LoginUser(req, res)
 );
 
-userRouter.post('/logout', ensureAuthenticated, (req, res) =>
+userRouter.post('/signout', ensureAuthenticated, (req, res) =>
   LogoutUser(req, res)
 );
 
 userRouter.get('/me', ensureAuthenticated, async (req, res) => {
   res.send(req.user);
 });
+
+userRouter.patch('/me', ensureAuthenticated, (req, res) =>
+  UpdateUser(req, res)
+);
+
+userRouter.delete('/me', ensureAuthenticated, (req, res) =>
+  DeleteUser(req, res)
+);
 
 // this is a special route that allows a soft failure for user auth
 // for when users arrive with out a valid session

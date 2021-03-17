@@ -1,11 +1,15 @@
 const sanitize = require('mongo-sanitize');
 
-const { createNewUser } = require('../repos/userRepo');
+const {
+  createNewUser,
+  findAndUpdateUser,
+  removeUser,
+} = require('../repos/userRepo');
 
 const CreateUser = async (req, res, next) => {
   const user = {
     name: sanitize(req.body.name),
-    email: sanitize(req.body.username),
+    email: sanitize(req.body.email),
     password: req.body.password,
   };
 
@@ -25,7 +29,7 @@ const LoginUser = async (req, res) => {
   try {
     const user = {
       user: {
-        id: req.user._id,
+        id: req.user.id,
         name: req.user.name,
       },
     };
@@ -42,4 +46,40 @@ const LogoutUser = async (req, res) => {
   res.send();
 };
 
-module.exports = { CreateUser, LoginUser, LogoutUser };
+const UpdateUser = async (req, res) => {
+  const shapeUser = ({ name, email, password }) => {
+    return {
+      ...(name && sanitize({ name })),
+      ...(email && sanitize({ email })),
+      ...(password && { password }),
+    };
+  };
+
+  try {
+    const shapedUpdatedUser = shapeUser(req.body);
+    const response = await findAndUpdateUser(req.user.id, shapedUpdatedUser);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
+const DeleteUser = async (req, res) => {
+  try {
+    const response = await removeUser(req.user.id, req.body.password);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
+module.exports = { CreateUser, LoginUser, LogoutUser, UpdateUser, DeleteUser };
