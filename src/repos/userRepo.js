@@ -1,56 +1,6 @@
 const User = require('../models/userModel');
 
-const validator = require('validator');
-const { verifyPassword } = require('../models/userModel');
-
 const createNewUser = async ({ name, email, password }) => {
-  if (!name) {
-    return {
-      error: {
-        field: 'name',
-        message: 'Name is required',
-      },
-    };
-  }
-
-  if (!email) {
-    return {
-      error: {
-        field: 'email',
-        message: 'Email is required',
-      },
-    };
-  }
-
-  if (!validator.isEmail(email)) {
-    return {
-      error: {
-        field: 'email',
-        message: 'Please provide a valid email address',
-      },
-    };
-  }
-
-  const usernameExists = await findByEmail(email);
-
-  if (usernameExists) {
-    return {
-      error: {
-        field: 'email',
-        message: 'Email already exists',
-      },
-    };
-  }
-
-  if (!password || password.length < 8) {
-    return {
-      error: {
-        field: 'password',
-        message: 'Password must be at least 8 characters',
-      },
-    };
-  }
-
   const userDocument = new User({
     name,
     email,
@@ -70,23 +20,18 @@ const findByEmail = async (email) => {
 
 const findAndUpdateUser = async (id, updates) => {
   const updateKeys = Object.keys(updates);
+  const user = await User.findById(id).exec();
 
   if (updateKeys.length === 0) {
-    return {
-      error: {
-        message: `No updates received`,
-      },
-    };
+    return { user: user.toJSON() };
   }
-
-  const user = await User.findById(id).exec();
 
   updateKeys.map((key) => {
     user[key] = updates[key];
   });
 
   await user.save();
-  return user.toJSON();
+  return { user: user.toJSON() };
 };
 
 const findByToken = async (token) => {

@@ -7,22 +7,19 @@ const {
 } = require('../repos/userRepo');
 
 const CreateUser = async (req, res, next) => {
-  const user = {
-    name: sanitize(req.body.name),
-    email: sanitize(req.body.email),
-    password: req.body.password,
-  };
+  try {
+    const user = {
+      name: sanitize(req.body.name),
+      email: sanitize(req.body.email),
+      password: req.body.password,
+    };
 
-  const response = await createNewUser(user);
-
-  if (response.error) {
-    res.status(400).send(response.error);
-    return;
+    const response = await createNewUser(user);
+    res.locals.user = response;
+    next();
+  } catch (error) {
+    next(error);
   }
-
-  res.locals.user = response;
-
-  next();
 };
 
 const LoginUser = async (req, res) => {
@@ -46,7 +43,7 @@ const LogoutUser = async (req, res) => {
   res.send();
 };
 
-const UpdateUser = async (req, res) => {
+const UpdateUser = async (req, res, next) => {
   const shapeUser = ({ name, email, password }) => {
     return {
       ...(name && sanitize({ name })),
@@ -56,16 +53,14 @@ const UpdateUser = async (req, res) => {
   };
 
   try {
-    const shapedUpdatedUser = shapeUser(req.body);
-    const response = await findAndUpdateUser(req.user.id, shapedUpdatedUser);
-
+    const response = await findAndUpdateUser(req.user.id, shapeUser(req.body));
     if (response.error) {
       throw new Error(response.error);
     }
 
     res.status(200).send(response);
   } catch (error) {
-    res.status(400).send(error);
+    next(error);
   }
 };
 

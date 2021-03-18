@@ -3,7 +3,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import * as actionCreators from '../redux/actionCreators';
-import { login } from '../api/users';
+import { signin } from '../api/users';
 import AccountSubmitButton from '../components/userAccount/AccountSubmitButton';
 import AccountSecondaryButton from '../components/userAccount/AccountSecondaryButton';
 import InputEmail from '../components/form/InputEmail';
@@ -28,14 +28,14 @@ const SignInPage = (props) => {
     setPasswordError(false);
 
     try {
-      const res = await login(email, password, rememberMe);
+      const res = await signin(email, password, rememberMe);
 
       if (res.error) {
         throw new Error(res.error);
       }
 
       if (res.user) {
-        props.userLogin(res.user);
+        props.userSignIn(res.user);
         const { from } = location.state || { from: { pathname: '/dashboard' } };
         history.replace(from);
       }
@@ -65,6 +65,9 @@ const SignInPage = (props) => {
           onSubmit={onCreateAccountSubmit}
         >
           <div className='rounded-md shadow-sm -space-y-px'>
+            <label htmlFor='email' className='sr-only'>
+              Email
+            </label>
             <InputEmail
               value={email}
               onChange={setEmail}
@@ -73,6 +76,9 @@ const SignInPage = (props) => {
                 emailError ? 'rounded-t-md border-red-400 z-10' : 'rounded-t-md'
               }
             />
+            <label htmlFor='password' className='sr-only'>
+              Password
+            </label>
             <InputPassword
               value={password}
               onChange={setPassword}
@@ -84,7 +90,7 @@ const SignInPage = (props) => {
             />
           </div>
           {errorMessage && (
-            <div className='text-center text-sm text-red-400'>
+            <div className='text-center text-sm text-red-600'>
               {errorMessage}
             </div>
           )}
@@ -128,6 +134,6 @@ const SignInPage = (props) => {
   );
 };
 
-export default connect(null, { userLogin: actionCreators.userLogin })(
+export default connect(null, { userSignIn: actionCreators.userSignIn })(
   SignInPage
 );

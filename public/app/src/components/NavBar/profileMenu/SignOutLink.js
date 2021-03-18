@@ -2,15 +2,15 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import * as actionCreators from '../redux/actionCreators';
-import { logout } from '../api/users';
+import * as actionCreators from '../../../redux/actionCreators';
+import { signout } from '../../../api/users';
 
 const SignOutLink = (props) => {
   const history = useHistory();
 
   const onSignOutClick = async () => {
     try {
-      await logout();
+      await signout();
       props.userLogout();
       history.push('/signed-out');
     } catch (error) {
@@ -29,6 +29,6 @@ const SignOutLink = (props) => {
   );
 };
 
-export default connect(null, { userLogout: actionCreators.userLogout })(
+export default connect(null, { userLogout: actionCreators.userSignOut })(
   SignOutLink
 );

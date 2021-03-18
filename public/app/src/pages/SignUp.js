@@ -14,44 +14,37 @@ const SignUp = (props) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
+  const [errorMessages, setErrorMessages] = useState([]);
   const [isRedirecting, setRedirecting] = useState(false);
 
   const onSignUpSubmit = async (event) => {
     event.preventDefault();
+    setNameError(false);
+    setEmailError(false);
+    setPasswordError(false);
 
-    try {
-      const res = await signup(name, email, password);
+    const res = await signup(name, email, password);
 
-      if (res.error) {
-        if (res.error.field === 'name') {
-          setNameError(true);
-          setEmailError(false);
-          setPasswordError(false);
-        }
-        if (res.error.field === 'email') {
-          setNameError(false);
-          setEmailError(true);
-          setPasswordError(false);
-        }
-        if (res.error.field === 'password') {
-          setNameError(false);
-          setEmailError(false);
-          setPasswordError(true);
-        }
-        setErrorMessage(res.error.message);
-      }
+    if (res.errors) {
+      if (res.errors['name']) setNameError(true);
+      if (res.errors['email']) setEmailError(true);
+      if (res.errors['password']) setPasswordError(true);
 
-      if (res.data) {
-        props.userLogin(res.data.user);
-        setRedirecting(true);
-      }
-    } catch (error) {
-      setErrorMessage(error.message);
+      const messages = Object.values(res.errors).reduce((acc, obj) => {
+        return [...acc, obj.message];
+      }, []);
+
+      setErrorMessages(messages);
+    }
+
+    if (res.data) {
+      props.userLogin(res.data);
+      setRedirecting(true);
     }
   };
 
@@ -75,8 +68,11 @@ const SignUp = (props) => {
           className='mt-8 space-y-6'
         >
           <div className='rounded-md shadow-sm -space-y-px'>
+            <label htmlFor='name' className='sr-only'>
+              Name
+            </label>
             <InputName
-              vale={name}
+              value={name}
               onChange={setName}
               required
               autoFocus
@@ -84,11 +80,17 @@ const SignUp = (props) => {
                 nameError ? 'rounded-t-md border-red-400 z-10' : 'rounded-t-md'
               }
             />
+            <label htmlFor='email' className='sr-only'>
+              Email
+            </label>
             <InputEmail
               value={email}
               onChange={setEmail}
               className={emailError && 'border-red-400 z-20'}
             />
+            <label htmlFor='password' className='sr-only'>
+              Password
+            </label>
             <InputPassword
               value={password}
               onChange={setPassword}
@@ -100,9 +102,11 @@ const SignUp = (props) => {
             />
           </div>
           <div className='space-y-2'>
-            {errorMessage && (
-              <div className='mt-2 text-center text-sm text-red-400'>
-                {errorMessage}
+            {errorMessages && (
+              <div className='mt-2 text-center text-sm text-red-600'>
+                {errorMessages.map((error, i) => {
+                  return <p key={i}>{error}</p>;
+                })}
               </div>
             )}
           </div>
@@ -128,4 +132,4 @@ const SignUp = (props) => {
   );
 };
 
-export default connect(null, { userLogin: actionCreators.userLogin })(SignUp);
+export default connect(null, { userLogin: actionCreators.userSignIn })(SignUp);

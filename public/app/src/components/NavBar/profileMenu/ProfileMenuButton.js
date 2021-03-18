@@ -24,7 +24,7 @@ const ProfileMenuButton = (props) => {
       <div>
         <button
           type='button'
-          className='max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-4  focus:ring-gray-800'
+          className='max-w-xs rounded-full flex items-center text-sm focus:outline-none focus:ring-4  focus:ring-gray-800'
           id='user-menu'
           aria-expanded='false'
           aria-haspopup='true'

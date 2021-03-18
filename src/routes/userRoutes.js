@@ -1,6 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 
+const { BadRequestError, UnauthorisedError } = require('../utils/errors');
 const { ensureAuthenticated, rememberMe } = require('../middleware/userAuth');
 const {
   CreateUser,
@@ -14,12 +15,15 @@ const userRouter = express.Router();
 
 userRouter.post(
   '/signup',
-  (req, res, next) => CreateUser(req, res, next),
-  (req, res) => {
+  (req, res, next) =>
+    CreateUser(req, res, next).catch((error) => {
+      next(new BadRequestError(error));
+    }),
+  (req, res, next) => {
     const user = res.locals.user;
     req.login(user, (error) => {
       if (error) {
-        res.status(401).send(error);
+        next(new UnauthorisedError('Unauthorised'));
       }
       res.status(201).send(user);
     });
@@ -41,8 +45,8 @@ userRouter.get('/me', ensureAuthenticated, async (req, res) => {
   res.send(req.user);
 });
 
-userRouter.patch('/me', ensureAuthenticated, (req, res) =>
-  UpdateUser(req, res)
+userRouter.patch('/me', ensureAuthenticated, (req, res, next) =>
+  UpdateUser(req, res, next).catch((error) => next(new BadRequestError(error)))
 );
 
 userRouter.delete('/me', ensureAuthenticated, (req, res) =>
