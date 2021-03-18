@@ -14,9 +14,6 @@ const TextField = (props) => {
 
   return (
     <div>
-      <label htmlFor={name} className='sr-only'>
-        {placeholder}
-      </label>
       <input
         id={name}
         name={name}

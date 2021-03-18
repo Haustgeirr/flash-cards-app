@@ -11,9 +11,9 @@ const InputPassword = ({ value, onChange, autoFocus, className }) => {
       required
       autoFocus={autoFocus}
       autoComplete='new-password'
-      value={value}
-      className={className}
-      onChange={onChange}
+      value={value ? value : ''}
+      className={className ? className : ''}
+      onChange={onChange ? onChange : () => {}}
     />
   );
 };

@@ -4,24 +4,24 @@ export const baseUrl = axios.create({
   baseURL: '/api/v1',
 });
 
-export const signup = async (name, username, password) => {
+export const signup = async (name, email, password) => {
   try {
     const res = await baseUrl.post('/users/signup', {
       name,
-      username,
+      email,
       password,
     });
 
     return res;
   } catch (error) {
-    return { error: error.response.data };
+    return error.response.data;
   }
 };
 
-export const login = async (username, password, remember_me) => {
+export const signin = async (email, password, remember_me) => {
   try {
-    const res = await baseUrl.post('/users/login', {
-      username,
+    const res = await baseUrl.post('/users/signin', {
+      email,
       password,
       remember_me,
     });
@@ -32,12 +32,21 @@ export const login = async (username, password, remember_me) => {
   }
 };
 
+export const signout = async () => {
+  const res = await baseUrl.post('/users/signout', {});
+  return res.data;
+};
+
 export const getCurrentUser = async () => {
   const res = await baseUrl.get('/users/current_user');
   return res.data.user;
 };
 
-export const logout = async () => {
-  const res = await baseUrl.post('/users/logout', {});
-  return res.data;
+export const updateUserProfile = async ({ name, email }) => {
+  try {
+    const res = await baseUrl.patch('/users/me', { name, email });
+    return res.data;
+  } catch (error) {
+    return error.response.data;
+  }
 };

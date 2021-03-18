@@ -9,6 +9,7 @@ const path = require('path');
 
 const { apiConfig } = require('./config');
 const v1Router = require('./api/v1');
+const errorHandler = require('./middleware/errorHandler');
 require('./db/mongoose');
 require('./services/passport');
 
@@ -52,5 +53,7 @@ app.use(passport.authenticate('remember-me'));
 
 // Routes
 app.use('/api/v1', v1Router);
+
+app.use(errorHandler);
 
 module.exports = app;

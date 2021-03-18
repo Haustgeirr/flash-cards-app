@@ -10,9 +10,9 @@ const InputName = ({ value, onChange, autoFocus, className }) => {
       required
       autoComplete='name'
       autoFocus={autoFocus}
-      value={value}
-      className={className}
-      onChange={onChange}
+      value={value ? value : ''}
+      className={className ? className : ''}
+      onChange={onChange ? onChange : () => {}}
     />
   );
 };

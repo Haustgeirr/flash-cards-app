@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import NavBarLink from './NavBarLink';
-import ProfileMenuButton from '../profileMenu/ProfileMenuButton';
+import ProfileMenuButton from '../navBar/profileMenu/ProfileMenuButton';
 
 const NavBar = () => {
   return (

@@ -1,11 +1,11 @@
 import * as actions from './actions';
 
-const userLogin = (user) => ({
+const userSignIn = (user) => ({
   type: actions.USER_LOGIN,
   user,
 });
 
-const userLogout = () => ({
+const userSignOut = () => ({
   type: actions.USER_LOGOUT,
 });
 
@@ -36,8 +36,8 @@ function gettingUserAuthStopped() {
 }
 
 export {
-  userLogin,
-  userLogout,
+  userSignIn,
+  userSignOut,
   gettingUserAuth,
   gettingUserAuthSuccess,
   gettingUserAuthFailure,

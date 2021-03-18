@@ -4,13 +4,15 @@ import { connect } from 'react-redux';
 
 import AuthenticatedRoute from './router/AuthenticatedRoute';
 
-import './css/main.css';
+import './css/allstyles.css';
+// import './css/main.css';
 
 const IndexPage = React.lazy(() => import('./pages/Index'));
 const SignInPage = React.lazy(() => import('./pages/SignIn'));
 const SignUpPage = React.lazy(() => import('./pages/SignUp'));
 const SignedOutPage = React.lazy(() => import('./pages/SignedOut'));
 const DashboardPage = React.lazy(() => import('./pages/Dashboard'));
+const UserProfilePage = React.lazy(() => import('./pages/UserProfile'));
 
 class App extends React.Component {
   render() {
@@ -23,6 +25,8 @@ class App extends React.Component {
             <Route path='/signup' component={SignUpPage} />
             <Route path='/signed-out' component={SignedOutPage} />
             <AuthenticatedRoute path='/dashboard' component={DashboardPage} />
+            {/* <AuthenticatedRoute path='/profile' component={UserProfilePage} /> */}
+            <Route path='/profile' component={UserProfilePage} />
           </Switch>
         </Router>
       </Suspense>

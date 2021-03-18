@@ -7,10 +7,12 @@ const { userOne, userOneId } = require('./fixtures/db');
 const extractCookies = require('./fixtures/extractCookies');
 
 afterAll(async () => {
+  await User.deleteMany();
+  await new User(userOne).save();
   await mongoose.disconnect();
 });
 
-describe('POST / Create User tests', () => {
+describe('POST /signup', () => {
   beforeEach(async () => {
     await User.deleteMany();
   });
@@ -120,7 +122,7 @@ describe('POST / Create User tests', () => {
   });
 });
 
-describe('POST User Signin / Logout', () => {
+describe('POST /signin /signout', () => {
   beforeAll(async () => {
     await User.deleteMany();
     await new User(userOne).save();
@@ -191,7 +193,7 @@ describe('POST User Signin / Logout', () => {
   });
 });
 
-describe('GET /current_user auth tests', () => {
+describe('GET /current_user', () => {
   beforeAll(async () => {
     await User.deleteMany();
     await new User(userOne).save();
@@ -235,7 +237,7 @@ describe('GET /current_user auth tests', () => {
   });
 });
 
-describe('GET /me authorization tests', () => {
+describe('GET /me', () => {
   beforeAll(async () => {
     await User.deleteMany();
     await new User(userOne).save();
@@ -265,216 +267,6 @@ describe('GET /me authorization tests', () => {
 
   test('Should receive 401 if unauthorized', async () => {
     await request(app).get('/api/v1/users/me').send().expect(401);
-  });
-});
-
-describe('PATCH /me update user', () => {
-  beforeEach(async () => {
-    await User.deleteMany();
-    await new User(userOne).save();
-  });
-
-  test('should receive 401 if unauthorized', async () => {
-    await request(app).patch('/api/v1/users/me').send({}).expect(401);
-  });
-
-  test('should receive 400 if no data sent', async () => {
-    let agent = request.agent(app);
-
-    await agent.post('/api/v1/users/signin').send({
-      email: userOne.email,
-      password: userOne.password,
-    });
-
-    await agent.patch('/api/v1/users/me').send({}).expect(400);
-  });
-
-  test('should receive 200 on patch name ', async () => {
-    let agent = request.agent(app);
-
-    await agent.post('/api/v1/users/signin').send({
-      email: userOne.email,
-      password: userOne.password,
-    });
-
-    await agent
-      .patch('/api/v1/users/me')
-      .send({ name: 'Updated Name' })
-      .expect(200);
-  });
-
-  test('users name should be updated after patch', async () => {
-    let agent = request.agent(app);
-    const name = 'Updated Name';
-
-    await agent.post('/api/v1/users/signin').send({
-      email: userOne.email,
-      password: userOne.password,
-    });
-
-    const res = await agent.patch('/api/v1/users/me').send({ name });
-
-    const user = await User.findById(userOneId);
-    expect(user.name).toBe(name);
-  });
-
-  test('users email should be updated after patch', async () => {
-    let agent = request.agent(app);
-    const email = 'updatedemail@test.com';
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(200);
-
-    const res = await agent
-      .patch('/api/v1/users/me')
-      .send({ email })
-      .expect(200);
-
-    const user = await User.findById(userOneId);
-    expect(user.email).toBe(email);
-  });
-
-  test('user can sign in after changing email', async () => {
-    let agent = request.agent(app);
-    const email = 'updatedemail@test.com';
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(200);
-
-    await agent.patch('/api/v1/users/me').send({ email }).expect(200);
-
-    await agent.post('/api/v1/users/signout').send({}).expect(200);
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: email,
-        password: userOne.password,
-      })
-      .expect(200);
-  });
-
-  test('user cannot sign in with old email after changing it', async () => {
-    let agent = request.agent(app);
-    const email = 'updatedemail@test.com';
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(200);
-
-    await agent.patch('/api/v1/users/me').send({ email }).expect(200);
-
-    await agent.post('/api/v1/users/signout').send({}).expect(200);
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(401);
-  });
-
-  test('users password should be updated after patch', async () => {
-    let agent = request.agent(app);
-    const password = '87654321';
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(200);
-
-    const res = await agent
-      .patch('/api/v1/users/me')
-      .send({ password })
-      .expect(200);
-
-    const user = await User.findById(userOneId);
-    expect(await user.verifyPassword(password)).toBe(true);
-  });
-
-  test('user can sign in after changing password', async () => {
-    let agent = request.agent(app);
-    const password = '87654321';
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(200);
-
-    await agent.patch('/api/v1/users/me').send({ password }).expect(200);
-
-    await agent.post('/api/v1/users/signout').send({}).expect(200);
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: password,
-      })
-      .expect(200);
-  });
-
-  test('user cannot sign in with old password after changing it', async () => {
-    let agent = request.agent(app);
-    const password = '87654321';
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(200);
-
-    await agent.patch('/api/v1/users/me').send({ password }).expect(200);
-
-    await agent.post('/api/v1/users/signout').send({}).expect(200);
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(401);
-  });
-
-  test('user is still signed in after changing details', async () => {
-    let agent = request.agent(app);
-    const password = '87654321';
-
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(200);
-
-    await agent.patch('/api/v1/users/me').send({ password }).expect(200);
-
-    await agent.get('/api/v1/users/me').expect(200);
   });
 });
 

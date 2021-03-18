@@ -12,9 +12,9 @@ const InputEmail = ({ value, onChange, autoFocus, className }) => {
       autoComplete='email'
       autoFocus={autoFocus}
       inputMode='email'
-      value={value}
-      className={className}
-      onChange={onChange}
+      value={value ? value : ''}
+      className={className ? className : ''}
+      onChange={onChange ? onChange : () => {}}
     />
   );
 };
