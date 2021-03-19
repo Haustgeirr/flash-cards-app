@@ -6,33 +6,30 @@ import { updateUserProfile } from '../../api/users';
 import SubmitButton from '../input/SubmitButton';
 import Input from '../form/Input';
 
-const SectionProfileUpdate = (props) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+const SectionPasswordUpdate = (props) => {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
 
-  const [nameError, setNameError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
+  const [currentPasswordError, setCurrentPasswordError] = useState(false);
+  const [newPasswordError, setNewPasswordError] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isWaiting, setWaiting] = useState(false);
   const [hasErrors, setHasErrors] = useState(false);
 
   const inputStyle = `appearance-none rounded-none relative block w-full mt-1 px-3 py-2 rounded-md border border-gray-300 placeholder-gray-500 text-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-500 focus:border-gray-500 focus:ring-opacity-20 focus:z-50 sm:text-sm`;
 
-  const onUpdateProfileSubmit = async (event) => {
+  const onUpdatePasswordSubmit = async (event) => {
     event.preventDefault();
     setWaiting(true);
     setMessages([]);
 
-    const res = await updateUserProfile({
-      name,
-      email,
-    });
+    const res = await updateUserProfile({});
 
     if (res.errors) {
       setHasErrors(true);
 
-      if (res.errors['name']) setNameError(true);
-      if (res.errors['email']) setEmailError(true);
+      // if (res.errors['name']) setCurrentPasswordError(true);
+      // if (res.errors['email']) setNewPasswordError(true);
 
       const errorMessages = Object.values(res.errors).reduce((acc, obj) => {
         return [...acc, obj.message];
@@ -43,13 +40,13 @@ const SectionProfileUpdate = (props) => {
 
     if (res.user) {
       setHasErrors(false);
-      setNameError(false);
-      setEmailError(false);
-      setMessages(['Profile updated']);
+      setCurrentPasswordError(false);
+      setNewPasswordError(false);
+      setMessages(['Password updated']);
 
       props.userSignIn(res.user);
-      setName('');
-      setEmail('');
+      setCurrentPassword('');
+      setNewPassword('');
       setTimeout(() => setMessages([]), 4000);
     }
 
@@ -57,7 +54,7 @@ const SectionProfileUpdate = (props) => {
   };
 
   return (
-    <form onSubmit={onUpdateProfileSubmit} method='POST'>
+    <form onSubmit={onUpdatePasswordSubmit} method='POST'>
       <div className='px-4 py-5 space-y-6'>
         <div className='grid grid-cols-3 gap-6'>
           <div className='col-span-3 sm:col-span-2'>
@@ -65,19 +62,19 @@ const SectionProfileUpdate = (props) => {
               htmlFor='name'
               className='block text-sm font-medium text-gray-700'
             >
-              Name
+              Current password
             </label>
             <Input
-              id='name'
-              name='name'
-              autoComplete='name'
+              id='current-password'
+              name='current-password'
+              autoComplete='current-password'
               disabled={isWaiting}
               inputMode='text'
-              invalid={nameError}
+              invalid={currentPasswordError}
               placeholder=''
-              type='text'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              type='password'
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
             />
           </div>
           <div className='col-span-3 sm:col-span-2'>
@@ -85,19 +82,19 @@ const SectionProfileUpdate = (props) => {
               htmlFor='email'
               className='block text-sm font-medium text-gray-700'
             >
-              Email
+              New password
             </label>
             <Input
-              id='email'
-              name='email'
-              autoComplete='email'
+              id='new-password'
+              name='new-password'
+              autoComplete='new-password'
               disabled={isWaiting}
               inputMode='text'
-              invalid={emailError}
+              invalid={newPasswordError}
               placeholder=''
-              type='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type='password'
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
             />
           </div>
         </div>
@@ -105,7 +102,7 @@ const SectionProfileUpdate = (props) => {
 
       <div className='px-4 py-5 grid grid-cols-2 sm:grid-cols-3 gap-6'>
         <SubmitButton disabled={isWaiting} waiting={isWaiting}>
-          {isWaiting ? 'Updating...' : 'Update Profile'}
+          {isWaiting ? 'Updating...' : 'Update Password'}
         </SubmitButton>
         {messages && (
           <div
@@ -128,5 +125,5 @@ const SectionProfileUpdate = (props) => {
 };
 
 export default connect(null, { userSignIn: actionCreators.userSignIn })(
-  SectionProfileUpdate
+  SectionPasswordUpdate
 );

@@ -1,23 +1,62 @@
-const props = {};
+import { computeStyles, mergeStyles } from '../../utils/styles';
 
-// make constructor func here
-const styles = {
+const defaultStyles = {
   base:
-    'appearance-none rounded-none relative block w-full mt-1 px-3 py-2 rounded-md border border-gray-300 placeholder-gray-500 text-gray-800',
+    'appearance-none rounded-none relative block w-full mt-1 px-3 py-2 border rounded-md placeholder-gray-500 text-gray-800 transition duration-150 ease-out',
   actions: {
-    hover: '',
-    focus: 'ring-4 ring-gray-500 border-gray-500 ring-opacity-20 z-50',
-    disabled: '',
+    hover: ' border-gray-500',
+    focus:
+      'outline-none ring-4 ring-gray-500 border-gray-500 ring-opacity-20 z-50',
     active: '',
-    invalid: '',
   },
-  size: {
+  states: {
+    disabled: 'bg-gray-100 border-gray-200',
+    valid: 'border-gray-300',
+    invalid: 'border-red-400',
+  },
+  responsive: {
     sm: 'text-sm',
     md: '',
     lg: '',
   },
 };
 
-const Input = (props) => {};
+const Input = ({ styles = defaultStyles, ...props }) => {
+  const {
+    autoComplete,
+    autoFocus,
+    disabled,
+    id,
+    invalid,
+    name,
+    placeholder,
+    required,
+    type,
+    value,
+    onChange,
+  } = props;
+
+  styles = mergeStyles(defaultStyles, styles);
+  const computedStyles = computeStyles(styles, disabled, invalid);
+
+  return (
+    <div>
+      <input
+        id={id}
+        name={name}
+        placeholder={placeholder}
+        type={type ? type : 'text'}
+        value={value}
+        aria-invalid={invalid}
+        autoComplete={autoComplete ? autoComplete : 'off'}
+        autoFocus={autoFocus}
+        disabled={disabled}
+        required={required}
+        className={computedStyles}
+        onChange={onChange ? onChange : () => {}}
+      />
+    </div>
+  );
+};
 
 export default Input;

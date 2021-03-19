@@ -1,16 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import NavBar from '../components/navBar/NavBar';
-import InputPassword from '../components/form/InputPassword';
 import ProfileSection from '../components/profile/ProfileSection';
 import ProfileSectionHeader from '../components/profile/ProfileSectionHeader';
 import ProfileSectionContent from '../components/profile/ProfileSectionContent';
 import ProfileSectionSeparator from '../components/profile/ProfileSectionSeparator';
-import SubmitButton from '../components/form/SubmitButton';
 import SectionProfileUpdate from '../components/profile/SectionProfileUpdate';
+import SectionPasswordUpdate from '../components/profile/SectionPasswordUpdate';
+import DeleteAccountModal from '../components/profile/DeleteAccountModal';
+import Button from '../components/input/Button';
+
+const deleteButtonStyle = {
+  base:
+    'inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md transition duration-150 ease-out bg-red-500 text-white',
+  actions: {
+    hover: 'bg-red-400',
+    focus: 'outline-none ring-4 ring-red-500 ring-opacity-20 z-50',
+  },
+};
 
 const UserProfile = () => {
+  const [isShowingDeleteModal, setShowingDeleteModal] = useState(true);
   const user = useSelector((state) => state.users.user);
 
   return (
@@ -38,7 +49,7 @@ const UserProfile = () => {
                 </span>
               </div>
             </ProfileSectionHeader>
-            <ProfileSectionContent></ProfileSectionContent>
+            {/* <ProfileSectionContent></ProfileSectionContent> */}
           </ProfileSection>
           <ProfileSectionSeparator />
           <ProfileSection>
@@ -63,35 +74,7 @@ const UserProfile = () => {
               </h3>
             </ProfileSectionHeader>
             <ProfileSectionContent>
-              <form method='POST'>
-                <div className='sm:rounded-md sm:overflow-hidden'>
-                  <div className='px-4 py-5 space-y-6'>
-                    <div className='grid grid-cols-3 gap-6'>
-                      <div className='col-span-3 sm:col-span-2'>
-                        <label
-                          htmlFor='current_password'
-                          className='block text-sm font-medium text-gray-700'
-                        >
-                          Current password
-                        </label>
-                        <InputPassword className='mt-1 rounded-md shadow-sm' />
-                      </div>
-                      <div className='col-span-3 sm:col-span-2'>
-                        <label
-                          htmlFor='new_password'
-                          className='block text-sm font-medium text-gray-700'
-                        >
-                          New password
-                        </label>
-                        <InputPassword className='mt-1 rounded-md shadow-sm' />
-                      </div>
-                    </div>
-                  </div>
-                  <div className='px-4 py-5'>
-                    <SubmitButton>Update password</SubmitButton>
-                  </div>
-                </div>
-              </form>
+              <SectionPasswordUpdate />
             </ProfileSectionContent>
           </ProfileSection>
           <ProfileSectionSeparator />
@@ -106,7 +89,13 @@ const UserProfile = () => {
             </ProfileSectionHeader>
             <ProfileSectionContent>
               <div className='px-4 py-5'>
-                <SubmitButton>Delete account</SubmitButton>
+                <Button
+                  styles={deleteButtonStyle}
+                  // onClick={setShowingDeleteModal(true)}
+                >
+                  Delete account
+                </Button>
+                {isShowingDeleteModal && <DeleteAccountModal />}
               </div>
             </ProfileSectionContent>
           </ProfileSection>
