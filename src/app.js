@@ -52,6 +52,20 @@ app.use(passport.authenticate('remember-me'));
 // Routes
 app.use('/api/v1', v1Router);
 
+if (isProduction) {
+  // What should Express return if file is requested
+  // Check the build dir and return the file, if found
+  app.use(express.static('public/app/build'));
+
+  // Catchall case
+  // If we can't find anything at all, return to index.html
+  app.get('*', (req, res) => {
+    res.sendFile(
+      path.resolve(__dirname, '../public', 'app', 'build', 'index.html')
+    );
+  });
+}
+
 app.use(errorHandler);
 
 module.exports = app;
