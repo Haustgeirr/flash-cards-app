@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
 import * as actionCreators from '../../redux/actionCreators';
-import { updateUserProfile } from '../../api/users';
+import { updateUserPassword } from '../../api/users';
 import SubmitButton from '../input/SubmitButton';
-import Input from '../form/Input';
+import Input from '../input/Input';
+
+const inputStyles =
+  'appearance-none rounded-none relative block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-800 transition duration-150 ease-out hover:border-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-500 focus:border-gray-500 focus:ring-opacity-20 focus:z-50 disabled:bg-gray-100 disabled:border-gray-200 sm:text-sm';
 
 const SectionPasswordUpdate = (props) => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -16,20 +19,20 @@ const SectionPasswordUpdate = (props) => {
   const [isWaiting, setWaiting] = useState(false);
   const [hasErrors, setHasErrors] = useState(false);
 
-  const inputStyle = `appearance-none rounded-none relative block w-full mt-1 px-3 py-2 rounded-md border border-gray-300 placeholder-gray-500 text-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-500 focus:border-gray-500 focus:ring-opacity-20 focus:z-50 sm:text-sm`;
-
   const onUpdatePasswordSubmit = async (event) => {
     event.preventDefault();
     setWaiting(true);
     setMessages([]);
+    setCurrentPasswordError(false);
+    setNewPasswordError(false);
 
-    const res = await updateUserProfile({});
+    const res = await updateUserPassword(currentPassword, newPassword);
 
     if (res.errors) {
       setHasErrors(true);
 
-      // if (res.errors['name']) setCurrentPasswordError(true);
-      // if (res.errors['email']) setNewPasswordError(true);
+      if (res.errors['currentPassword']) setCurrentPasswordError(true);
+      if (res.errors['password']) setNewPasswordError(true);
 
       const errorMessages = Object.values(res.errors).reduce((acc, obj) => {
         return [...acc, obj.message];
@@ -72,9 +75,14 @@ const SectionPasswordUpdate = (props) => {
               inputMode='text'
               invalid={currentPasswordError}
               placeholder=''
+              required
               type='password'
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
+              className={[
+                inputStyles,
+                currentPasswordError ? ' border-red-400' : '',
+              ].join('')}
             />
           </div>
           <div className='col-span-3 sm:col-span-2'>
@@ -92,9 +100,14 @@ const SectionPasswordUpdate = (props) => {
               inputMode='text'
               invalid={newPasswordError}
               placeholder=''
+              required
               type='password'
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
+              className={[
+                inputStyles,
+                newPasswordError ? ' border-red-400' : '',
+              ].join('')}
             />
           </div>
         </div>

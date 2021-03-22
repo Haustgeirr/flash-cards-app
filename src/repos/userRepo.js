@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const { BadRequestError } = require('../utils/errors');
 
 const createNewUser = async ({ name, email, password }) => {
   const userDocument = new User({
@@ -38,17 +39,27 @@ const findByToken = async (token) => {
   return await User.findOne({ rememberMeToken: token }).exec();
 };
 
-const removeUser = async (id, password) => {
+const verifyUserPassword = async (id, password) => {
   const user = await User.findById(id).exec();
-
   const passwordsDoMatch = await user.verifyPassword(password);
 
   if (!passwordsDoMatch) {
-    return { error: { field: 'password', message: 'Passwords do not match' } };
+    throw new BadRequestError({
+      currentPassword: { message: 'Credentials do not match our records' },
+    });
   }
 
-  await user.remove();
-  return user.toJSON();
+  return user;
+};
+
+const removeUser = async (id, password) => {
+  try {
+    const user = await verifyUserPassword(id, password);
+    await user.remove();
+    return user.toJSON();
+  } catch (error) {
+    throw new BadRequestError(error.errors);
+  }
 };
 
 const setRememberMeToken = async (user, token) => {
@@ -62,6 +73,7 @@ module.exports = {
   findByEmail,
   findByToken,
   findAndUpdateUser,
+  verifyUserPassword,
   removeUser,
   setRememberMeToken,
 };

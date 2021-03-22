@@ -4,7 +4,9 @@ const {
   createNewUser,
   findAndUpdateUser,
   removeUser,
+  verifyUserPassword,
 } = require('../repos/userRepo');
+const { BadRequestError } = require('../utils/errors');
 
 const CreateUser = async (req, res, next) => {
   try {
@@ -44,18 +46,17 @@ const LogoutUser = async (req, res) => {
 };
 
 const UpdateUser = async (req, res, next) => {
-  const shapeUser = ({ name, email, password }) => {
+  const shapeUser = ({ name, email }) => {
     return {
       ...(name && sanitize({ name })),
       ...(email && sanitize({ email })),
-      ...(password && { password }),
     };
   };
 
   try {
     const response = await findAndUpdateUser(req.user.id, shapeUser(req.body));
     if (response.error) {
-      throw new Error(response.error);
+      throw new BadRequestError(response.error);
     }
 
     res.status(200).send(response);
@@ -64,17 +65,45 @@ const UpdateUser = async (req, res, next) => {
   }
 };
 
-const DeleteUser = async (req, res) => {
-  try {
-    const response = await removeUser(req.user.id, req.body.password);
+const UpdatePassword = async (req, res, next) => {
+  const { id } = req.user;
+  const {
+    current_password: currentPassword,
+    new_password: newPassword,
+  } = req.body;
 
-    if (response.error) {
-      throw new Error(response.error);
+  try {
+    await verifyUserPassword(id, currentPassword);
+    const response = await findAndUpdateUser(id, { password: newPassword });
+
+    if (response.errors) {
+      throw new BadRequestError(response.error);
     }
+
     res.status(200).send(response);
   } catch (error) {
-    res.status(400).send(error);
+    next(error);
   }
 };
 
-module.exports = { CreateUser, LoginUser, LogoutUser, UpdateUser, DeleteUser };
+const DeleteUser = async (req, res, next) => {
+  const { id } = req.user;
+  const { password } = req.body;
+  try {
+    const response = await removeUser(id, password);
+    req.logout();
+    res.clearCookie('remember_me');
+    res.status(200).send(response);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  CreateUser,
+  LoginUser,
+  LogoutUser,
+  UpdateUser,
+  UpdatePassword,
+  DeleteUser,
+};

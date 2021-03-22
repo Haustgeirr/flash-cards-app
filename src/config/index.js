@@ -8,7 +8,7 @@ const devApiConfig = {
 
 const prodApiConfig = {
   baseUrl: '',
-  sessionCookieMaxAge: 20 * 60 * 1000,
+  sessionCookieMaxAge: 3600 * 1000,
   rememberMeCookieMaxAge: 7 * 24 * 3600 * 1000,
 };
 

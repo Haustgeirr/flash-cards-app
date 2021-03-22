@@ -5,12 +5,32 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Chrome localhost:3000",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/wwwroot"
+        },
+        {
+            "name": "Edge localhost:3000",
             "type": "edge",
             "version": "stable",
             "request": "launch",
-            "name": "Launch Edge against localhost",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}"
-        }
+        },
+        {
+            "name": "Debug Jest Tests",
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": [
+              "--inspect-brk",
+              "${workspaceRoot}/node_modules/.bin/jest",
+              "--runInBand"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "port": 9229
+          }
     ]
 }

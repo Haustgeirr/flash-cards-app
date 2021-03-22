@@ -17,14 +17,12 @@ const rootReducer = (state, action) => {
   return appReducer(state, action);
 };
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 export default function configureStore(initialState = {}) {
   return createStore(
     rootReducer,
     initialState,
-    compose(
-      applyMiddleware(thunk),
-      window.__REDUX_DEVTOOLS_EXTENSION__ &&
-        window.__REDUX_DEVTOOLS_EXTENSION__()
-    )
+    composeEnhancers(applyMiddleware(thunk))
   );
 }
