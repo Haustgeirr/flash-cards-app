@@ -6,16 +6,16 @@ const SignedOutPage = () => {
     <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
       <div className='max-w-md w-full py-12 px-6 space-y-8'>
         <h1 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>
-          You have been signed out
+          Your account has been deleted
         </h1>
         <div className='flex items-center justify-center text-sm'>
-          Forgotten something?
+          Feeling a bit Chaotic-Neutral?
           <div className='pl-2'>
             <Link
-              to='/signin'
+              to='/signup'
               className='underline text-gray-900 hover:text-gray-600'
             >
-              Sign in
+              Make a new one
             </Link>
           </div>
         </div>

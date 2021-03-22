@@ -16,17 +16,12 @@ const SectionProfileUpdate = (props) => {
   const [isWaiting, setWaiting] = useState(false);
   const [hasErrors, setHasErrors] = useState(false);
 
-  const inputStyle = `appearance-none rounded-none relative block w-full mt-1 px-3 py-2 rounded-md border border-gray-300 placeholder-gray-500 text-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-500 focus:border-gray-500 focus:ring-opacity-20 focus:z-50 sm:text-sm`;
-
   const onUpdateProfileSubmit = async (event) => {
     event.preventDefault();
     setWaiting(true);
     setMessages([]);
 
-    const res = await updateUserProfile({
-      name,
-      email,
-    });
+    const res = await updateUserProfile(name, email);
 
     if (res.errors) {
       setHasErrors(true);

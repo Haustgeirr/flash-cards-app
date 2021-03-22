@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 
-const { BadRequestError, UnauthorisedError } = require('../utils/errors');
+const { BadRequestError } = require('../utils/errors');
 const { ensureAuthenticated, rememberMe } = require('../middleware/userAuth');
 const {
   CreateUser,
@@ -9,6 +9,7 @@ const {
   LogoutUser,
   UpdateUser,
   DeleteUser,
+  UpdatePassword,
 } = require('../controllers/userController');
 
 const userRouter = express.Router();
@@ -23,7 +24,7 @@ userRouter.post(
     const user = res.locals.user;
     req.login(user, (error) => {
       if (error) {
-        next(new UnauthorisedError('Unauthorised'));
+        next(error);
       }
       res.status(201).send(user);
     });
@@ -49,8 +50,16 @@ userRouter.patch('/me', ensureAuthenticated, (req, res, next) =>
   UpdateUser(req, res, next).catch((error) => next(new BadRequestError(error)))
 );
 
-userRouter.delete('/me', ensureAuthenticated, (req, res) =>
-  DeleteUser(req, res)
+userRouter.patch('/change_password', ensureAuthenticated, (req, res, next) =>
+  UpdatePassword(req, res, next).catch((error) =>
+    next(new BadRequestError(error))
+  )
+);
+
+userRouter.delete('/me', ensureAuthenticated, (req, res, next) =>
+  DeleteUser(req, res, next).catch((error) => {
+    next(new BadRequestError(error));
+  })
 );
 
 // this is a special route that allows a soft failure for user auth

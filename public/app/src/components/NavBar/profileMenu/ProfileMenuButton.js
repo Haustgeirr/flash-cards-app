@@ -1,44 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 
 import ProfileMenuDropdown from './ProfileMenuDropdown';
+import useOnClickOutside from '../../../hooks/useOnClickOutside';
 
-const ProfileMenuButton = (props) => {
-  const [isShowingMenu, setShowMenuState] = useState(false);
-
-  useEffect(() => {
-    const pageClickEvent = (e) => {
-      setShowMenuState(false);
-    };
-
-    if (isShowingMenu) {
-      window.addEventListener('click', pageClickEvent);
-    }
-
-    return () => {
-      window.removeEventListener('click', pageClickEvent);
-    };
-  }, [isShowingMenu]);
+const ProfileMenuButton = () => {
+  const dropdownRef = useRef(null);
+  const [isOpen, setIsOpen] = useOnClickOutside(dropdownRef, false);
 
   return (
     <div className='relative'>
       <div>
         <button
           type='button'
-          className='max-w-xs rounded-full flex items-center text-sm focus:outline-none focus:ring-4  focus:ring-gray-800'
+          className='max-w-xs rounded-full flex items-center text-sm focus:outline-none focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-4 focus:ring-white focus:ring-opacity-80 transition duration-150 ease-out'
           id='user-menu'
           aria-expanded='false'
           aria-haspopup='true'
-          onClick={(e) => setShowMenuState(!isShowingMenu)}
+          onClick={(e) => setIsOpen(!isOpen)}
         >
           <span className='sr-only'> Open user Menu</span>
-          <img
-            className='h-8 w-8 rounded-full'
-            src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-            alt=''
-          />
+          <span className='inline-block h-8 w-8 rounded-full overflow-hidden bg-gray-200'>
+            <svg
+              className='h-full w-full text-gray-400'
+              fill='currentColor'
+              viewBox='0 0 24 24'
+            >
+              <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
+            </svg>
+          </span>
         </button>
       </div>
-      {isShowingMenu && <ProfileMenuDropdown />}
+      {isOpen && (
+        <div ref={dropdownRef}>
+          <ProfileMenuDropdown />
+        </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
+const plugin = require('tailwindcss/plugin');
+
 module.exports = {
   purge: {
-    enabled: true,
     content: ['./src/**/*.js', './public/index.html'],
   },
   darkMode: false, // or 'media' or 'class'
@@ -8,7 +9,21 @@ module.exports = {
     extend: {},
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ['disabled', 'invalid'],
+      borderColor: ['disabled', 'invalid'],
+      textColor: ['disabled', 'invalid'],
+      cursor: ['disabled', 'invalid'],
+    },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [
+    require('@tailwindcss/forms'),
+    plugin(function ({ addVariant, e }) {
+      addVariant('invalid', ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `.${e(`invalid${separator}${className}`)}:invalid`;
+        });
+      });
+    }),
+  ],
 };

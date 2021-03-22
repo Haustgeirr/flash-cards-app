@@ -1,10 +1,10 @@
 import Button from './Button';
 
-const SubmitButton = ({ styles, ...props }) => {
-  const { disabled, type, waiting } = props;
+const SubmitButton = ({ className, ...props }) => {
+  const { disabled, waiting } = props;
 
   return (
-    <Button type='submit' styles={styles} disabled={disabled}>
+    <Button type='submit' className={className} disabled={disabled}>
       {waiting && (
         <svg
           className='animate-spin -ml-1 mr-3 h-4 w-4 text-white'

@@ -9,6 +9,7 @@ import AccountSubmitButton from '../components/userAccount/AccountSubmitButton';
 import AccountSecondaryButton from '../components/userAccount/AccountSecondaryButton';
 import InputPassword from '../components/form/InputPassword';
 import InputName from '../components/form/InputName';
+import Logo from '../components/Logo';
 
 const SignUp = (props) => {
   const [name, setName] = useState('');
@@ -53,11 +54,7 @@ const SignUp = (props) => {
       {isRedirecting && <Redirect push to='/dashboard' />}
       <div className='max-w-md w-full py-12 px-6 space-y-8'>
         <div>
-          <img
-            className='mx-auto h-12 w-auto'
-            src='https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg'
-            alt='Workflow'
-          />
+          <Logo />
           <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>
             Create your account
           </h2>

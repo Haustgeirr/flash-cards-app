@@ -9,6 +9,7 @@ import * as actionCreators from './redux/actionCreators';
 import App from './App';
 
 const store = configureStore();
+
 getUserLoginStatus(store);
 
 function getUserLoginStatus(store) {
@@ -16,7 +17,7 @@ function getUserLoginStatus(store) {
 }
 
 function getUserProfileThunk() {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     dispatch(actionCreators.gettingUserAuth());
     try {
       const user = await getCurrentUser();

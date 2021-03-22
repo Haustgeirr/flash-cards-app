@@ -42,9 +42,33 @@ export const getCurrentUser = async () => {
   return res.data.user;
 };
 
-export const updateUserProfile = async ({ name, email }) => {
+export const updateUserProfile = async (name, email) => {
   try {
     const res = await baseUrl.patch('/users/me', { name, email });
+    return res.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
+
+export const updateUserPassword = async (current_password, new_password) => {
+  try {
+    const res = await baseUrl.patch('/users/change_password', {
+      current_password,
+      new_password,
+    });
+    return res.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
+
+export const deleteUser = async (password) => {
+  try {
+    const res = await baseUrl.delete('/users/me', {
+      data: { password },
+    });
+
     return res.data;
   } catch (error) {
     return error.response.data;

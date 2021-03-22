@@ -13,7 +13,7 @@ export function computeStyles(styles, disabled = false, invalid = false) {
 
   let computedStyles = styles.base + composeStyles(responsive);
   if (disabled) {
-    computedStyles += states.disabled;
+    computedStyles = states.disabled;
   } else {
     computedStyles += invalid ? ' ' + states.invalid : ' ' + states.valid;
     computedStyles += composeStyles(actions);

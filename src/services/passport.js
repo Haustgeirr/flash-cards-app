@@ -15,9 +15,13 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  findById(id).then((user) => {
-    done(null, user.toJSON());
-  });
+  findById(id)
+    .then((user) => {
+      if (user) done(null, user.toJSON());
+    })
+    .catch((err) => {
+      return done(err);
+    });
 });
 
 passport.use(

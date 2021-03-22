@@ -8,6 +8,7 @@ const { userOne, userOneId, userTwo } = require('./fixtures/db');
 afterAll(async () => {
   await User.deleteMany();
   await new User(userOne).save();
+  await mongoose.connection.db.dropCollection('sessions');
   await mongoose.disconnect();
 });
 
@@ -147,6 +148,13 @@ describe('PATCH /me update user', () => {
       })
       .expect(401);
   });
+});
+
+describe('PATCH /change_password update user password', () => {
+  beforeEach(async () => {
+    await User.deleteMany();
+    await new User(userOne).save();
+  });
 
   test('users password should be updated after patch', async () => {
     let agent = request.agent(app);
@@ -157,7 +165,9 @@ describe('PATCH /me update user', () => {
       password: userOne.password,
     });
 
-    const res = await agent.patch('/api/v1/users/me').send({ password });
+    await agent
+      .patch('/api/v1/users/change_password')
+      .send({ current_password: userOne.password, new_password: password });
 
     const user = await User.findById(userOneId);
     expect(await user.verifyPassword(password)).toBe(true);
@@ -172,7 +182,9 @@ describe('PATCH /me update user', () => {
       password: userOne.password,
     });
 
-    await agent.patch('/api/v1/users/me').send({ password });
+    await agent
+      .patch('/api/v1/users/change_password')
+      .send({ current_password: userOne.password, new_password: password });
 
     await agent.post('/api/v1/users/signout').send({});
 
@@ -189,17 +201,16 @@ describe('PATCH /me update user', () => {
     let agent = request.agent(app);
     const password = '87654321';
 
+    await agent.post('/api/v1/users/signin').send({
+      email: userOne.email,
+      password: userOne.password,
+    });
+
     await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(200);
+      .patch('/api/v1/users/change_password')
+      .send({ current_password: userOne.password, new_password: password });
 
-    await agent.patch('/api/v1/users/me').send({ password }).expect(200);
-
-    await agent.post('/api/v1/users/signout').send({}).expect(200);
+    await agent.post('/api/v1/users/signout').send({});
 
     await agent
       .post('/api/v1/users/signin')
@@ -214,15 +225,14 @@ describe('PATCH /me update user', () => {
     let agent = request.agent(app);
     const password = '87654321';
 
-    await agent
-      .post('/api/v1/users/signin')
-      .send({
-        email: userOne.email,
-        password: userOne.password,
-      })
-      .expect(200);
+    await agent.post('/api/v1/users/signin').send({
+      email: userOne.email,
+      password: userOne.password,
+    });
 
-    await agent.patch('/api/v1/users/me').send({ password }).expect(200);
+    await agent
+      .patch('/api/v1/users/change_password')
+      .send({ current_password: userOne.password, new_password: password });
 
     await agent.get('/api/v1/users/me').expect(200);
   });

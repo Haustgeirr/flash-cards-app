@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import NavBar from '../components/navBar/NavBar';
@@ -10,19 +10,16 @@ import SectionProfileUpdate from '../components/profile/SectionProfileUpdate';
 import SectionPasswordUpdate from '../components/profile/SectionPasswordUpdate';
 import DeleteAccountModal from '../components/profile/DeleteAccountModal';
 import Button from '../components/input/Button';
-
-const deleteButtonStyle = {
-  base:
-    'inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md transition duration-150 ease-out bg-red-500 text-white',
-  actions: {
-    hover: 'bg-red-400',
-    focus: 'outline-none ring-4 ring-red-500 ring-opacity-20 z-50',
-  },
-};
+import Modal from '../components/Modal';
 
 const UserProfile = () => {
-  const [isShowingDeleteModal, setShowingDeleteModal] = useState(true);
   const user = useSelector((state) => state.users.user);
+
+  const modal = useRef(null);
+
+  const handleClick = () => {
+    modal.current.open();
+  };
 
   return (
     <div>
@@ -32,9 +29,9 @@ const UserProfile = () => {
           <ProfileSection>
             <ProfileSectionHeader>
               <div className='mt-1 flex items-center'>
-                <span className='inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100'>
+                <span className='inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-200'>
                   <svg
-                    className='h-full w-full text-gray-300'
+                    className='h-full w-full text-gray-400'
                     fill='currentColor'
                     viewBox='0 0 24 24'
                   >
@@ -89,13 +86,12 @@ const UserProfile = () => {
             </ProfileSectionHeader>
             <ProfileSectionContent>
               <div className='px-4 py-5'>
-                <Button
-                  styles={deleteButtonStyle}
-                  // onClick={setShowingDeleteModal(true)}
-                >
+                <Button className='btn-danger' onClick={(e) => handleClick(e)}>
                   Delete account
                 </Button>
-                {isShowingDeleteModal && <DeleteAccountModal />}
+                <Modal open ref={modal}>
+                  <DeleteAccountModal />
+                </Modal>
               </div>
             </ProfileSectionContent>
           </ProfileSection>

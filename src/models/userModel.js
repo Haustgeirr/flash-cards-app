@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const bcrypt = require('bcryptjs');
+const argon2 = require('argon2');
 
-const { BadRequestError } = require('../utils/errors');
+const { BadRequestError, ServerError } = require('../utils/errors');
 
 const userSchema = new mongoose.Schema(
   {
@@ -51,7 +51,7 @@ userSchema.methods.toJSON = function () {
 
 userSchema.methods.verifyPassword = async function (password) {
   const user = this;
-  const passwordsDoMatch = await bcrypt.compare(password, user.password);
+  const passwordsDoMatch = await argon2.verify(user.password, password);
   return passwordsDoMatch;
 };
 
@@ -59,7 +59,7 @@ userSchema.pre('save', async function (next) {
   const user = this;
 
   if (user.isModified('password')) {
-    user.password = await bcrypt.hash(user.password, 8);
+    user.password = await argon2.hash(user.password);
   }
 
   next();
@@ -72,11 +72,6 @@ userSchema.pre('remove', async function (next) {
 });
 
 userSchema.post('save', (error, res, next) => {
-  // console.log('userSchema.post', Object.keys(error));
-  // console.log('userSchema.post', Object.keys(error.errors));
-  // console.log('userSchema.post', Object.keys(error.errors.email));
-  // console.log('userSchema.post', error.errors.email.reason);
-
   if (error.name === 'MongoError' && error.code === 11000) {
     next(
       new BadRequestError({ email: { message: 'Email is already in use' } })
@@ -90,11 +85,6 @@ userSchema.post('save', (error, res, next) => {
     errorKeys.map((key) => {
       shapedErrors[key] = { message: error.errors[key].message };
     });
-    // const shapedErrors = errorKeys.map((key) => {
-    //   return { [key]: { message: error.errors[key].message } };
-    // });
-
-    // console.log('shapedErrors', shapedErrors);
 
     next(new BadRequestError(shapedErrors));
   }
