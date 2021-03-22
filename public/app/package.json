@@ -24,7 +24,7 @@
     "@tailwindcss/forms": "^0.2.1"
   },
   "scripts": {
-    "build:react": "react-scripts build",
+    "build": "react-scripts build",
     "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
