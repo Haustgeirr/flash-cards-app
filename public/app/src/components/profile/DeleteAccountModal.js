@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Input from '../input/Input';
 import Button from '../input/Button';
 import { deleteUser } from '../../api/users';
@@ -15,7 +15,6 @@ const cancelButtonStyle =
 
 const DeleteAccountModal = (props) => {
   const history = useHistory();
-  const location = useLocation();
   const { close } = props;
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
