@@ -10,7 +10,8 @@
     "dev:client": "BROWSER=none npm run start --prefix public/app",
     "mongo-build": "docker run -d --name mongo-db -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=secret mongo",
     "dev:mongo": "docker start mongo-db",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix public/app && npm run build --prefix public/app"
   },
   "keywords": [],
   "author": "",
