@@ -7,11 +7,11 @@ const devApiConfig = {
 };
 
 const prodApiConfig = {
-  baseUrl: '',
+  baseUrl: `${process.env.HEROKU_ORIGIN}/api/v1`,
   sessionCookieMaxAge: 3600 * 1000,
   rememberMeCookieMaxAge: 7 * 24 * 3600 * 1000,
 };
 
 const apiConfig = isProduction ? prodApiConfig : devApiConfig;
 
-module.exports = { apiConfig };
+module.exports = { isProduction, apiConfig };

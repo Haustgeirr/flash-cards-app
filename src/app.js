@@ -1,25 +1,23 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo').default;
-const path = require('path');
 
-const { apiConfig } = require('./config');
+const { isProduction, apiConfig } = require('./config');
 const v1Router = require('./api/v1');
 const errorHandler = require('./middleware/errorHandler');
 require('./db/mongoose');
 require('./services/passport');
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cookieParser());
 
 // CORS setup
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: isProduction ? process.env.CORS_ORIGIN : 'http://localhost:3000',
 };
 
 app.use(cors(corsOptions));
@@ -39,7 +37,7 @@ const sess = {
   },
 };
 
-if (process.env.NODE_ENV === 'production') {
+if (isProduction) {
   app.set('trust proxy', 1);
   sess.cookie.secure = true;
 }

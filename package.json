@@ -9,7 +9,8 @@
     "dev:server": "nodemon src/index.js",
     "dev:client": "BROWSER=none npm run start --prefix public/app",
     "mongo-build": "docker run -d --name mongo-db -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=secret mongo",
-    "dev:mongo": "docker start mongo-db"
+    "dev:mongo": "docker start mongo-db",
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",

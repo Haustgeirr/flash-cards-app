@@ -12,7 +12,7 @@ const ProfileMenuButton = () => {
       <div>
         <button
           type='button'
-          className='max-w-xs rounded-full flex items-center text-sm focus:outline-none focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-4 focus:ring-white focus:ring-opacity-80 transition duration-150 ease-out'
+          className='max-w-xs rounded-full flex items-center text-sm focus:outline-none focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-4 focus:ring-white transition duration-150 ease-out'
           id='user-menu'
           aria-expanded='false'
           aria-haspopup='true'
