@@ -85,7 +85,7 @@ const UserProfile = () => {
               </p>
             </ProfileSectionHeader>
             <ProfileSectionContent>
-              <div className='px-4 py-5'>
+              <div className='px-4 py-5 grid grid-cols-2 sm:grid-cols-3 gap-6'>
                 <Button className='btn-danger' onClick={(e) => handleClick(e)}>
                   Delete account
                 </Button>

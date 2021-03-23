@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 
 import * as actionCreators from '../redux/actionCreators';
 import { signin } from '../api/users';
-import AccountSubmitButton from '../components/userAccount/AccountSubmitButton';
-import AccountSecondaryButton from '../components/userAccount/AccountSecondaryButton';
-import InputEmail from '../components/form/InputEmail';
-import InputPassword from '../components/form/InputPassword';
-import Checkbox from '../components/form/Checkbox';
+
 import Logo from '../components/Logo';
+import Checkbox from '../components/input/Checkbox';
+import Input from '../components/input/Input';
+import SecureSubmitButton from '../components/input/SecureSubmitButton';
 
 const SignInPage = (props) => {
   const history = useHistory();
@@ -23,10 +22,13 @@ const SignInPage = (props) => {
   const [passwordError, setPasswordError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const [isWaiting, setIsWaiting] = useState(false);
+
   const onCreateAccountSubmit = async (event) => {
     event.preventDefault();
     setEmailError(false);
     setPasswordError(false);
+    setIsWaiting(true);
 
     try {
       const res = await signin(email, password, rememberMe);
@@ -44,6 +46,7 @@ const SignInPage = (props) => {
       setEmailError(true);
       setPasswordError(true);
       setErrorMessage(error.message);
+      setIsWaiting(false);
     }
   };
 
@@ -61,29 +64,46 @@ const SignInPage = (props) => {
           method='POST'
           onSubmit={onCreateAccountSubmit}
         >
-          <div className='rounded-md shadow-sm -space-y-px'>
+          <div className='rounded-md -space-y-px'>
             <label htmlFor='email' className='sr-only'>
               Email
             </label>
-            <InputEmail
+            <Input
+              id='email'
+              name='email'
+              autoComplete='email'
+              disabled={isWaiting}
+              inputMode='text'
+              invalid={emailError}
+              required
+              placeholder='Email'
+              type='email'
               value={email}
-              onChange={setEmail}
-              autoFocus
-              className={
-                emailError ? 'rounded-t-md border-red-400 z-10' : 'rounded-t-md'
-              }
+              onChange={(e) => setEmail(e.target.value)}
+              className={[
+                'input-default rounded-md mt-2',
+                emailError ? ' border-red-400' : '',
+              ].join('')}
             />
             <label htmlFor='password' className='sr-only'>
               Password
             </label>
-            <InputPassword
+            <Input
+              id='password'
+              name='password'
+              autoComplete='password'
+              disabled={isWaiting}
+              inputMode='text'
+              invalid={passwordError}
+              placeholder='Password'
+              required
+              type='password'
               value={password}
-              onChange={setPassword}
-              className={
-                passwordError
-                  ? 'rounded-b-md border-red-400 z-20'
-                  : 'rounded-b-md'
-              }
+              onChange={(e) => setPassword(e.target.value)}
+              className={[
+                'input-default rounded-md mt-2',
+                passwordError ? ' border-red-400' : '',
+              ].join('')}
             />
           </div>
           {errorMessage && (
@@ -108,7 +128,14 @@ const SignInPage = (props) => {
             </div>
           </div>
           <div>
-            <AccountSubmitButton text='Sign in' />
+            <SecureSubmitButton
+              className='btn-signup'
+              disabled={isWaiting}
+              waiting={isWaiting}
+            >
+              {' '}
+              {isWaiting ? '' : 'Sign in'}
+            </SecureSubmitButton>
           </div>
         </form>
         <div className='mt-6'>
@@ -123,7 +150,9 @@ const SignInPage = (props) => {
             </div>
           </div>
           <div className='mt-8'>
-            <AccountSecondaryButton to='/signup' text='Make on for free' />
+            <Link to='/signup' className='btn-signup-secondary'>
+              Make one for free
+            </Link>
           </div>
         </div>
       </div>
