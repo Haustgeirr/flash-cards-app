@@ -29,7 +29,8 @@
     "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev-css": "postcss ./src/css/tailwind.css -o ./src/css/allstyles.css"
+    "css-dev": "postcss ./src/css/tailwind.css -o ./src/css/allstyles.css",
+    "css-prod": "NPM_CONFIG_PRODUCTION=true postcss ./src/css/tailwind.css -o ./src/css/main.css "
   },
   "eslintConfig": {
     "extends": [
