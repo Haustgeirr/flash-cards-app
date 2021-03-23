@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import * as actionCreators from '../redux/actionCreators';
 import { signup } from '../api/users';
-import InputEmail from '../components/form/InputEmail';
-import AccountSubmitButton from '../components/userAccount/AccountSubmitButton';
-import AccountSecondaryButton from '../components/userAccount/AccountSecondaryButton';
-import InputPassword from '../components/form/InputPassword';
-import InputName from '../components/form/InputName';
+import Input from '../components/input/Input';
 import Logo from '../components/Logo';
+import SecureSubmitButton from '../components/input/SecureSubmitButton';
 
 const SignUp = (props) => {
   const [name, setName] = useState('');
@@ -22,12 +19,14 @@ const SignUp = (props) => {
 
   const [errorMessages, setErrorMessages] = useState([]);
   const [isRedirecting, setRedirecting] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
 
   const onSignUpSubmit = async (event) => {
     event.preventDefault();
     setNameError(false);
     setEmailError(false);
     setPasswordError(false);
+    setIsWaiting(true);
 
     const res = await signup(name, email, password);
 
@@ -41,6 +40,7 @@ const SignUp = (props) => {
       }, []);
 
       setErrorMessages(messages);
+      setIsWaiting(false);
     }
 
     if (res.data) {
@@ -64,38 +64,66 @@ const SignUp = (props) => {
           onSubmit={onSignUpSubmit}
           className='mt-8 space-y-6'
         >
-          <div className='rounded-md shadow-sm -space-y-px'>
+          <div className='rounded-md -space-y-px'>
             <label htmlFor='name' className='sr-only'>
               Name
             </label>
-            <InputName
-              value={name}
-              onChange={setName}
+            <Input
+              id='name'
+              name='name'
+              autoComplete='name'
+              disabled={isWaiting}
+              inputMode='text'
+              invalid={nameError}
+              placeholder='Name'
               required
-              autoFocus
-              className={
-                nameError ? 'rounded-t-md border-red-400 z-10' : 'rounded-t-md'
-              }
+              type='text'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={[
+                'input-default rounded-md',
+                nameError ? ' border-red-400' : '',
+              ].join('')}
             />
             <label htmlFor='email' className='sr-only'>
               Email
             </label>
-            <InputEmail
+            <Input
+              id='email'
+              name='email'
+              autoComplete='email'
+              disabled={isWaiting}
+              inputMode='text'
+              invalid={emailError}
+              required
+              placeholder='Email'
+              type='email'
               value={email}
-              onChange={setEmail}
-              className={emailError && 'border-red-400 z-20'}
+              onChange={(e) => setEmail(e.target.value)}
+              className={[
+                'input-default rounded-md mt-2',
+                emailError ? ' border-red-400' : '',
+              ].join('')}
             />
             <label htmlFor='password' className='sr-only'>
               Password
             </label>
-            <InputPassword
+            <Input
+              id='password'
+              name='password'
+              autoComplete='password'
+              disabled={isWaiting}
+              inputMode='text'
+              invalid={passwordError}
+              placeholder='Password'
+              required
+              type='password'
               value={password}
-              onChange={setPassword}
-              className={
-                passwordError
-                  ? 'rounded-b-md border-red-400 z-30'
-                  : 'rounded-b-md'
-              }
+              onChange={(e) => setPassword(e.target.value)}
+              className={[
+                'input-default rounded-md mt-2',
+                passwordError ? ' border-red-400' : '',
+              ].join('')}
             />
           </div>
           <div className='space-y-2'>
@@ -107,7 +135,14 @@ const SignUp = (props) => {
               </div>
             )}
           </div>
-          <AccountSubmitButton text='Sign up for free' />
+          <SecureSubmitButton
+            className='btn-signup'
+            disabled={isWaiting}
+            waiting={isWaiting}
+          >
+            {' '}
+            {isWaiting ? '' : 'Sign up for free'}
+          </SecureSubmitButton>
         </form>
         <div className='mt-6'>
           <div className='relative'>
@@ -121,7 +156,9 @@ const SignUp = (props) => {
             </div>
           </div>
           <div className='mt-8'>
-            <AccountSecondaryButton to='/signin' text='Sign in' />
+            <Link to='/signin' className='btn-signup-secondary'>
+              Sign in
+            </Link>
           </div>
         </div>
       </div>

@@ -12,8 +12,9 @@ module.exports = {
     extend: {
       backgroundColor: ['disabled', 'invalid'],
       borderColor: ['disabled', 'invalid'],
-      textColor: ['disabled', 'invalid'],
       cursor: ['disabled', 'invalid'],
+      placeholderColor: ['disabled', 'invalid'],
+      textColor: ['disabled', 'invalid'],
     },
   },
   plugins: [

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../../redux/actionCreators';
 import { updateUserProfile } from '../../api/users';
 import SubmitButton from '../input/SubmitButton';
-import Input from '../form/Input';
+import Input from '../input/Input';
 
 const SectionProfileUpdate = (props) => {
   const [name, setName] = useState('');
@@ -73,6 +73,10 @@ const SectionProfileUpdate = (props) => {
               type='text'
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className={[
+                'input-default rounded-md mt-1',
+                nameError ? ' border-red-400' : '',
+              ].join('')}
             />
           </div>
           <div className='col-span-3 sm:col-span-2'>
@@ -93,6 +97,10 @@ const SectionProfileUpdate = (props) => {
               type='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className={[
+                'input-default rounded-md mt-1',
+                emailError ? ' border-red-400' : '',
+              ].join('')}
             />
           </div>
         </div>
