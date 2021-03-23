@@ -22,6 +22,7 @@ const rememberMe = async (req, res, next) => {
       path: '/',
       httpOnly: true,
       maxAge: apiConfig.rememberMeCookieMaxAge,
+      secure: apiConfig.secure,
     });
 
     return next();
