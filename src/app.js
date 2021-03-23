@@ -62,10 +62,10 @@ if (isProduction) {
   // If we can't find anything at all, return to index.html
   app.get('*', (req, res) => {
     console.log(
-      path.resolve(__dirname, '../public/app', 'build/public', 'index.html')
+      path.resolve(__dirname, '../public', 'app', 'build', 'index.html')
     );
     res.sendFile(
-      path.resolve(__dirname, '../public/app', 'build/public', 'index.html')
+      path.resolve(__dirname, '../public', 'app', 'build', 'index.html')
     );
   });
 }
