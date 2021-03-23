@@ -22,7 +22,6 @@ class App extends React.Component {
       <Suspense fallback={<div>Loading...</div>}>
         <Router>
           <Switch>
-            <Route path='/404' component={NotFoundPage} />
             <Route path='/' exact component={IndexPage} />
             <Route path='/signin' component={SignInPage} />
             <Route path='/signup' component={SignUpPage} />
@@ -30,6 +29,7 @@ class App extends React.Component {
             <Route path='/account-deleted' component={AccountDeleted} />
             <AuthenticatedRoute path='/dashboard' component={DashboardPage} />
             <AuthenticatedRoute path='/profile' component={UserProfilePage} />
+            <Route component={NotFoundPage} />
           </Switch>
         </Router>
       </Suspense>
