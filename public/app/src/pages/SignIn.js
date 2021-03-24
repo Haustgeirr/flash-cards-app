@@ -39,7 +39,9 @@ const SignInPage = (props) => {
 
       if (res.user) {
         props.userSignIn(res.user);
-        const { from } = location.state || { from: { pathname: '/dashboard' } };
+        const { from } = location.state || {
+          from: { pathname: '/decks/dashboard' },
+        };
         history.replace(from);
       }
     } catch (error) {
@@ -91,7 +93,7 @@ const SignInPage = (props) => {
             <Input
               id='password'
               name='password'
-              autoComplete='password'
+              autoComplete='current-password'
               disabled={isWaiting}
               inputMode='text'
               invalid={passwordError}

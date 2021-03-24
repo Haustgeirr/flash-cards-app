@@ -1,9 +1,11 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import ProfileMenuLink from './ProfileMenuLink';
 import SignOutLink from './SignOutLink';
 
-const ProfileMenuDropdown = () => {
+const ProfileMenuDropdown = (props) => {
+  const { onMenuItemClick } = props;
   const user = useSelector((state) => state.users.user);
 
   return (
@@ -19,12 +21,17 @@ const ProfileMenuDropdown = () => {
         <strong>{user.name}</strong>
       </div>
       <div className=''>
-        <Link
-          to='/profile'
+        <ProfileMenuLink
+          to='/decks/profile'
+          text='Profile'
+          onClick={onMenuItemClick}
+        />
+        {/* <Link
+          to='/decks/profile'
           className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
         >
           Settings
-        </Link>
+        </Link> */}
         <SignOutLink />
       </div>
     </div>

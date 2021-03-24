@@ -1,17 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const NavBarLink = (props) => {
+  const { to, text, location } = props;
   return (
-    <Link
-      to={{
-        pathname: props.href,
-        activeClassName: 'bg-gray-900',
-      }}
-      className='bg-gray-900 text-gray-200 px-3 py-2 text-sm font-medium rounded-md'
+    <NavLink
+      to={to}
+      className='text-gray-300 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-700'
+      location={location}
+      activeClassName='navlink-active'
     >
-      {props.text}
-    </Link>
+      {text}
+    </NavLink>
   );
 };
 

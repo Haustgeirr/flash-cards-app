@@ -7,6 +7,10 @@ const ProfileMenuButton = () => {
   const dropdownRef = useRef(null);
   const [isOpen, setIsOpen] = useOnClickOutside(dropdownRef, false);
 
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className='relative'>
       <div>
@@ -16,7 +20,7 @@ const ProfileMenuButton = () => {
           id='user-menu'
           aria-expanded='false'
           aria-haspopup='true'
-          onClick={(e) => setIsOpen(!isOpen)}
+          onClick={() => toggleMenu()}
         >
           <span className='sr-only'> Open user Menu</span>
           <span className='inline-block h-8 w-8 rounded-full overflow-hidden bg-gray-200'>
@@ -32,7 +36,7 @@ const ProfileMenuButton = () => {
       </div>
       {isOpen && (
         <div ref={dropdownRef}>
-          <ProfileMenuDropdown />
+          <ProfileMenuDropdown onMenuItemClick={toggleMenu} />
         </div>
       )}
     </div>

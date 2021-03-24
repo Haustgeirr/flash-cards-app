@@ -821,10 +821,6 @@ select {
   color: rgba(249, 250, 251, var(--tw-text-opacity));
 }
 
-.btn:focus {
-  z-index: 50;
-}
-
 .btn {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1020,7 +1016,6 @@ select {
 }
 
 .btn-danger {
-  z-index: 50;
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
@@ -1102,13 +1097,6 @@ select {
   --tw-text-opacity: 1;
   color: rgba(31, 41, 55, var(--tw-text-opacity));
   width: 100%;
-}
-
-.input-default:focus {
-  z-index: 50;
-}
-
-.input-default {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
@@ -33091,6 +33079,13 @@ select {
 
 .animate-bounce {
   animation: bounce 1s infinite;
+}
+
+.navlink-active {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  background-color: rgba(17, 24, 39, var(--tw-bg-opacity)) !important;
+  color: rgba(255, 255, 255, var(--tw-text-opacity)) !important;
 }
 
 @media (min-width: 640px) {
