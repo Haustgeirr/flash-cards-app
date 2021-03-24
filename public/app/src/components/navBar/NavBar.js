@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { connect } from 'react-redux';
 
 import NavBarLink from './NavBarLink';
@@ -7,14 +7,15 @@ import Logo from '../Logo';
 import MobileMenuButton from './MobileMenuButton';
 import MobileMenu from './MobileMenu';
 import { Route, Switch, useRouteMatch } from 'react-router';
-import { NavLink } from 'react-router-dom';
 
+import useOnClickOutside from '../../hooks/useOnClickOutside';
 import DashboardPage from '../../pages/Dashboard';
 import ProfilePage from '../../pages/UserProfile';
 
 const NavBar = () => {
+  const mobileMenuRef = useRef(null);
   const { path, url } = useRouteMatch();
-  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [menuIsOpen, setMenuIsOpen] = useOnClickOutside(mobileMenuRef, false);
 
   return (
     <div>
@@ -40,7 +41,13 @@ const NavBar = () => {
             </div>
           </div>
         </div>
-        <MobileMenu isOpen={menuIsOpen} />
+        <div
+          ref={mobileMenuRef}
+          className={(menuIsOpen ? '' : 'hidden') + ' sm:hidden'}
+          id='mobile-menu'
+        >
+          <MobileMenu />
+        </div>
       </nav>
       <div>
         <Switch>
