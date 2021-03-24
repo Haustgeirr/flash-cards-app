@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const useOneClickOutside = (ref, initialState) => {
   const [isOpen, setIsOpen] = useState(initialState);
@@ -10,12 +10,18 @@ const useOneClickOutside = (ref, initialState) => {
       }
     };
 
+    const escapeKeyEvent = (event) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+
     if (isOpen) {
       document.addEventListener('click', pageClickEvent);
+      document.addEventListener('keydown', escapeKeyEvent);
     }
 
     return () => {
       document.removeEventListener('click', pageClickEvent);
+      document.removeEventListener('keydown', escapeKeyEvent);
     };
   }, [isOpen, ref]);
 

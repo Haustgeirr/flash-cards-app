@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import NavBar from '../components/navBar/NavBar';
 import ProfileSection from '../components/profile/ProfileSection';
 import ProfileSectionHeader from '../components/profile/ProfileSectionHeader';
 import ProfileSectionContent from '../components/profile/ProfileSectionContent';
@@ -23,8 +22,7 @@ const UserProfile = () => {
 
   return (
     <div>
-      <NavBar />
-      <div className='bg-white'>
+      <div className='bg-gray-50'>
         <div className='max-w-4xl mx-auto py-6 sm:px-6 lg:px-8'>
           <ProfileSection>
             <ProfileSectionHeader>

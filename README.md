@@ -2,9 +2,20 @@
 
 ## About
 
-This is a flash card app to memorisation of broad topics.
+I'm working on this project to develop my knowledge of full-stack app
+development and, in particular, get comfortable with TDD. The main branch
+includes only user CRUD operations, as this would provide me with a great
+jumping off point for future projects.
 
-### Built with
+I've tried to make it as **responsive**, **accessible** and **secure** as I can.
+
+## Built with
+
+### Frontend
+
+- React
+- Redux
+- Tailwind CSS
 
 #### Backend
 
