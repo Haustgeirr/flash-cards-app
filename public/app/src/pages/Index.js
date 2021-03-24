@@ -41,9 +41,8 @@ const IndexPage = () => {
               <span className='block'> Flash Cards!</span>
             </h1>
             <p className='text-base text-gray-500 mt-6 sm:mt-8 sm:text-xl sm:max-w-xl xl:mt-12'>
-              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui
-              lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat
-              fugiat aliqua.
+              A minimalistic tool to help you learn faster and improve recall.
+              Build your deck. Test yourself. Remember things!
             </p>
             <div
               className={
