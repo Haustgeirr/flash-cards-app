@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const IndexPage = () => {
@@ -8,7 +8,7 @@ const IndexPage = () => {
 
   useEffect(() => {
     if (isAuthenticated) setSignedIn(true);
-  });
+  }, [isAuthenticated, setSignedIn]);
 
   return (
     <div className='relative overflow-hidden min-h-screen bg-gray-50 px-6'>

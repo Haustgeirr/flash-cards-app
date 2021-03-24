@@ -34,11 +34,13 @@ const ProfileMenuButton = () => {
           </span>
         </button>
       </div>
-      {isOpen && (
-        <div ref={dropdownRef}>
-          <ProfileMenuDropdown onMenuItemClick={toggleMenu} />
-        </div>
-      )}
+      <div
+        ref={dropdownRef}
+        className={isOpen ? '' : 'hidden'}
+        id='profile-menu'
+      >
+        <ProfileMenuDropdown onMenuItemClick={toggleMenu} />
+      </div>
     </div>
   );
 };
