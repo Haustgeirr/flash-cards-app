@@ -6,7 +6,6 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "autoprefixer": "^10.2.5",
     "axios": "^0.21.1",
     "http-proxy-middleware": "^0.19.1",
     "react": "^17.0.1",
@@ -20,6 +19,8 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.2.1",
+    "autoprefixer": "^10.2.5",
+    "cssnano": "^4.1.10",
     "postcss": "^8.2.8",
     "postcss-cli": "^8.3.1",
     "tailwindcss": "^2.0.3"
@@ -29,12 +30,8 @@
     "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-<<<<<<< HEAD
-    "css:dev": "NODE_ENV=production postcss ./src/css/tailwind.css -o ./src/css/main.css",
-    "css:build": "postcss ./src/css/tailwind.css -o ./src/css/allstyles.css"
-=======
-    "css-build": "NPM_CONFIG_PRODUCTION=true postcss ./src/css/tailwind.css -o ./src/css/main.css && postcss ./src/css/tailwind.css -o ./src/css/allstyles.css"
->>>>>>> 4a24ec06fc1870cd95a90609ba743b9194833005
+    "css:build": "NODE_ENV=production postcss ./src/css/tailwind.css -o ./src/css/main.css",
+    "css:dev": "postcss ./src/css/tailwind.css -o ./src/css/allstyles.css"
   },
   "eslintConfig": {
     "extends": [
