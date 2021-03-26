@@ -1,15 +1,16 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 
-const app = require('../src/app');
-const User = require('../src/models/userModel');
-const { userOne, userOneId, userTwo } = require('./fixtures/db');
+const app = require('../../src/app');
+const User = require('../../src/models/userModel');
+const { userOne, userOneId, userTwo } = require('../fixtures/db');
 
-afterAll(async () => {
+afterAll(async (done) => {
   await User.deleteMany();
   await new User(userOne).save();
   await mongoose.connection.db.dropCollection('sessions');
   await mongoose.disconnect();
+  done();
 });
 
 describe('PATCH /me update user', () => {

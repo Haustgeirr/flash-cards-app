@@ -13,4 +13,13 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-module.exports = randomString;
+const ObjectId = require('mongoose').Types.ObjectId;
+
+function isValidObjectId(id) {
+  if (String(new ObjectId(id)) === id) {
+    return true;
+  }
+  return false;
+}
+
+module.exports = { randomString, isValidObjectId };

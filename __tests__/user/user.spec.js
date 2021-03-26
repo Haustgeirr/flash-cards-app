@@ -1,16 +1,17 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 
-const app = require('../src/app');
-const User = require('../src/models/userModel');
-const { userOne, userOneId } = require('./fixtures/db');
-const extractCookies = require('./fixtures/extractCookies');
+const app = require('../../src/app');
+const User = require('../../src/models/userModel');
+const { userOne, userOneId } = require('../fixtures/db');
+const extractCookies = require('../fixtures/extractCookies');
 
-afterAll(async () => {
+afterAll(async (done) => {
   await User.deleteMany();
   await new User(userOne).save();
   await mongoose.connection.db.dropCollection('sessions');
-  await mongoose.disconnect();
+  mongoose.disconnect();
+  done();
 });
 
 describe('POST /signup', () => {
