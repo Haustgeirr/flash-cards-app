@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import Input from '../input/Input';
@@ -8,7 +7,6 @@ import { addNewDeck } from '../../api/decks';
 import * as actionCreators from '../../redux/deckActionCreators';
 
 const NewDeckModal = (props) => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const { close } = props;
   const [title, setTitle] = useState('');
@@ -20,22 +18,20 @@ const NewDeckModal = (props) => {
   const onAddDeckSubmit = async (event) => {
     event.preventDefault();
     setWaiting(true);
-
     dispatch(actionCreators.addingDeck());
-    const response = await addNewDeck({ name: title, description });
 
-    if (response.errors) {
-      setTitleError(true);
-      setErrorMessage(response.errors['name'].message);
-      dispatch(actionCreators.addingDeckFailure());
-    } else {
-      dispatch(actionCreators.addingDeckSuccess(response));
-      close();
-    }
+    addNewDeck({ name: title, description }).then((response) => {
+      if (response.errors) {
+        setTitleError(true);
+        setErrorMessage(response.errors['name'].message);
+        dispatch(actionCreators.addingDeckFailure());
+      } else {
+        dispatch(actionCreators.addingDeckSuccess(response));
+        close();
+      }
+    });
+
     setWaiting(false);
-
-    // history.replace(`/decks/${res.id || 'dashboard'}`);
-    // history.replace(`/decks/dashboard`);
   };
 
   return (
