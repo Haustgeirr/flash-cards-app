@@ -90,6 +90,8 @@ const deleteUser = async (req, res, next) => {
   const { id } = req.user;
   const { password } = req.body;
   try {
+    // remove all users' decks here
+
     const response = await removeUser(id, password);
     req.logout();
     res.clearCookie('remember_me');

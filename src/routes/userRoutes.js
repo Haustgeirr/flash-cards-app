@@ -74,7 +74,7 @@ userRouter.get(
     res.status(200).end();
   },
   (req, res) => {
-    res.send({ user: { id: req.user._id, name: req.user.name } });
+    res.send({ user: req.user });
   }
 );
 

@@ -3,7 +3,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const devApiConfig = {
   baseUrl: 'http://localhost:5000/api/v1',
   sessionCookieMaxAge: 5 * 60 * 1000,
-  rememberMeCookieMaxAge: 5 * 60 * 1000,
+  rememberMeCookieMaxAge: 3600 * 1000,
   secure: false,
 };
 

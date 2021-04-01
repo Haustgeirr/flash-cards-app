@@ -1,8 +1,4 @@
-import axios from 'axios';
-
-export const baseUrl = axios.create({
-  baseURL: '/api/v1',
-});
+import { baseUrl } from './config';
 
 export const signup = async (name, email, password) => {
   try {
@@ -28,6 +24,7 @@ export const signin = async (email, password, remember_me) => {
 
     return res.data;
   } catch (error) {
+    console.log(error);
     return { error: 'These credentials do not match our records' };
   }
 };

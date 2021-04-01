@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 
-import * as actionCreators from '../redux/actionCreators';
+import * as actionCreators from '../redux/userActionCreators';
 import { signup } from '../api/users';
 import Input from '../components/input/Input';
 import Logo from '../components/Logo';

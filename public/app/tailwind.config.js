@@ -19,6 +19,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
+    require('@tailwindcss/line-clamp'),
     plugin(function ({ addVariant, e }) {
       addVariant('invalid', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {

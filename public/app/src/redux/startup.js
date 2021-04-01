@@ -1,6 +1,6 @@
 import configureStore from './reducers';
 import { getCurrentUser } from '../api/users';
-import * as actionCreators from './actionCreators';
+import * as actionCreators from './userActionCreators';
 
 export default function startupStore() {
   const store = configureStore();

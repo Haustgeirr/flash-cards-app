@@ -4,11 +4,12 @@ const mongoose = require('mongoose');
 const app = require('../../src/app');
 const User = require('../../src/models/userModel');
 const Deck = require('../../src/models/deckModel');
-const { userOne, userOneId } = require('../fixtures/db');
+const { userOne, userOneId, deckOne } = require('../fixtures/db');
 
 afterAll(async (done) => {
   await User.deleteMany();
   await new User(userOne).save();
+  await new Deck(deckOne).save();
   await mongoose.connection.db.dropCollection('sessions');
   mongoose.disconnect();
   done();

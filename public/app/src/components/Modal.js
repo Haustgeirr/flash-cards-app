@@ -45,7 +45,7 @@ const Modal = ({ children, startOpen = false }, ref) => {
             &#8203;
           </span>
           <div
-            className='inline-block align-middle bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'
+            className='inline-block align-middle bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle max-w-lg w-full'
             ref={modalRef}
           >
             {React.cloneElement(children, { close })}

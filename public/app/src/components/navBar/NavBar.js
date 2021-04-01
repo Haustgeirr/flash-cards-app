@@ -28,7 +28,7 @@ const NavBar = () => {
                 <Logo className='block h-8 w-auto text-gray-200 lg:hidden' />
                 <Logo className='hidden h-8 w-auto text-gray-200 lg:block' />
               </div>
-              <div className='hidden md:block'>
+              <div className='hidden sm:block'>
                 <div className='ml-10 flex items-baseline space-x-4'>
                   <NavBarLink to={`${url}/dashboard`} text='Dashboard' />
                 </div>
@@ -51,7 +51,7 @@ const NavBar = () => {
       </nav>
       <div>
         <Switch>
-          <Route exact path={`${path}/dashboard`}>
+          <Route path={`${path}/dashboard`}>
             <DashboardPage />
           </Route>
           <Route exact path={`${path}/profile`}>

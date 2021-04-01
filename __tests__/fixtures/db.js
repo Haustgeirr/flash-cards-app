@@ -74,14 +74,7 @@ const cardFour = {
   description: 'A short description',
 };
 
-const setupDatabase = async () => {
-  await Card.deleteMany();
-  await Deck.deleteMany();
-  await User.deleteMany();
-};
-
 module.exports = {
-  setupDatabase,
   userOneId,
   userOne,
   userTwoId,

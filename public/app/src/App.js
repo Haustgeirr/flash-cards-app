@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 
 import AuthenticatedRoute from './router/AuthenticatedRoute';
 
-// import './css/allstyles.css';
-import './css/main.css';
+import './css/allstyles.css';
+// import './css/main.css';
 
 const IndexPage = React.lazy(() => import('./pages/Index'));
 const SignInPage = React.lazy(() => import('./pages/SignIn'));

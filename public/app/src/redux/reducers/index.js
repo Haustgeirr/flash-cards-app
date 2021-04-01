@@ -2,9 +2,11 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 
 import users from './user';
+import decks from './decks';
 
 const reducers = {
   users,
+  decks,
 };
 
 const appReducer = combineReducers({ ...reducers });

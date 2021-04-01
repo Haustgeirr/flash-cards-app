@@ -82,7 +82,7 @@ describe('POST /signup', () => {
     await request(app)
       .post('/api/v1/users/signup')
       .send({
-        name: 'jest',
+        name: 'Jest',
         email: 'jest@test.com',
         password: '12345678',
       })

@@ -4,12 +4,24 @@ const mongoose = require('mongoose');
 const app = require('../../src/app');
 const User = require('../../src/models/userModel');
 const Deck = require('../../src/models/deckModel');
-const { userOne, userOneId, deckOne, deckOneId } = require('../fixtures/db');
+const {
+  userOne,
+  userOneId,
+  userTwo,
+  userTwoId,
+  deckOne,
+  deckOneId,
+  deckTwo,
+  deckTwoId,
+  deckThree,
+  deckThreeId,
+} = require('../fixtures/db');
 
 afterAll(async (done) => {
   await User.deleteMany();
   await Deck.deleteMany();
   await new User(userOne).save();
+  await new Deck(deckOne).save();
   await mongoose.connection.db.dropCollection('sessions');
   mongoose.disconnect();
   done();
@@ -119,5 +131,30 @@ describe('GET /:id get single deck', () => {
 
   test('status 401 if not auth', async () => {
     await request(app).get(`/api/v1/decks/${deckOneId}`).expect(401);
+  });
+});
+
+describe('GET / decks for different users', () => {
+  beforeEach(async () => {
+    await Deck.deleteMany();
+    await User.deleteMany();
+    await new User(userOne).save();
+    await new User(userTwo).save();
+    await new Deck(deckOne).save();
+    await new Deck(deckTwo).save();
+    await new Deck(deckThree).save();
+  });
+
+  test('should not get another user decks', async () => {
+    let agent = request.agent(app);
+    await agent.post('/api/v1/users/signin').send({
+      email: userOne.email,
+      password: userOne.password,
+    });
+
+    const user = await User.findById(userOneId);
+    await user.populate('decks').execPopulate();
+
+    expect(user.decks.length).toBe(1);
   });
 });

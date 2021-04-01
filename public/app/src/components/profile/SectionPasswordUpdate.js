@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
-import * as actionCreators from '../../redux/actionCreators';
+import * as actionCreators from '../../redux/userActionCreators';
 import { updateUserPassword } from '../../api/users';
 import SubmitButton from '../input/SubmitButton';
 import Input from '../input/Input';

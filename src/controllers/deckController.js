@@ -1,6 +1,11 @@
 const sanitize = require('mongo-sanitize');
 
-const { createNewDeck, findAllDecks, findDeck } = require('../repos/deckRepo');
+const {
+  createNewDeck,
+  findAllDecks,
+  findDeck,
+  deleteDeck,
+} = require('../repos/deckRepo');
 
 const createDeck = async (req, res, next) => {
   try {
@@ -22,6 +27,7 @@ const getAllUserDecks = async (req, res, next) => {
 
   try {
     const decks = await findAllDecks(user.id);
+
     res.status(200).send(decks);
   } catch (error) {
     next(error);
@@ -29,12 +35,26 @@ const getAllUserDecks = async (req, res, next) => {
 };
 
 const getDeck = async (req, res, next) => {
-  const id = req.params.id;
   try {
+    const id = req.params.id;
     const deck = await findDeck(id);
     res.status(200).send(deck);
   } catch (error) {
     next(error);
   }
 };
-module.exports = { createDeck, getAllUserDecks, getDeck };
+
+const deleteUserDeck = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const user = req.user;
+
+    await deleteDeck(id);
+    const decks = await findAllDecks(user.id);
+    res.status(200).send(decks);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createDeck, getAllUserDecks, getDeck, deleteUserDeck };

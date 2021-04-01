@@ -36,6 +36,7 @@ deckSchema.methods.toJSON = function () {
   const deckJson = {
     id: deck._id,
     name: deck.name,
+    description: deck.description,
   };
 
   return deckJson;
