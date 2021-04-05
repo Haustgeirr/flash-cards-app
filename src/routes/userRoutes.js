@@ -4,12 +4,12 @@ const passport = require('passport');
 const { BadRequestError } = require('../utils/errors');
 const { ensureAuthenticated, rememberMe } = require('../middleware/userAuth');
 const {
-  CreateUser,
-  LoginUser,
-  LogoutUser,
-  UpdateUser,
-  DeleteUser,
-  UpdatePassword,
+  createUser,
+  signInUser,
+  signOutUser,
+  updateUser,
+  deleteUser,
+  updateUserPassword,
 } = require('../controllers/userController');
 
 const userRouter = express.Router();
@@ -17,7 +17,7 @@ const userRouter = express.Router();
 userRouter.post(
   '/signup',
   (req, res, next) =>
-    CreateUser(req, res, next).catch((error) => {
+    createUser(req, res, next).catch((error) => {
       next(new BadRequestError(error));
     }),
   (req, res, next) => {
@@ -35,11 +35,11 @@ userRouter.post(
   '/signin',
   passport.authenticate('local'),
   rememberMe,
-  (req, res) => LoginUser(req, res)
+  (req, res) => signInUser(req, res)
 );
 
 userRouter.post('/signout', ensureAuthenticated, (req, res) =>
-  LogoutUser(req, res)
+  signOutUser(req, res)
 );
 
 userRouter.get('/me', ensureAuthenticated, async (req, res) => {
@@ -47,17 +47,17 @@ userRouter.get('/me', ensureAuthenticated, async (req, res) => {
 });
 
 userRouter.patch('/me', ensureAuthenticated, (req, res, next) =>
-  UpdateUser(req, res, next).catch((error) => next(new BadRequestError(error)))
+  updateUser(req, res, next).catch((error) => next(new BadRequestError(error)))
 );
 
 userRouter.patch('/change_password', ensureAuthenticated, (req, res, next) =>
-  UpdatePassword(req, res, next).catch((error) =>
+  updateUserPassword(req, res, next).catch((error) =>
     next(new BadRequestError(error))
   )
 );
 
 userRouter.delete('/me', ensureAuthenticated, (req, res, next) =>
-  DeleteUser(req, res, next).catch((error) => {
+  deleteUser(req, res, next).catch((error) => {
     next(new BadRequestError(error));
   })
 );
@@ -74,7 +74,7 @@ userRouter.get(
     res.status(200).end();
   },
   (req, res) => {
-    res.send({ user: { id: req.user._id, name: req.user.name } });
+    res.send({ user: req.user });
   }
 );
 

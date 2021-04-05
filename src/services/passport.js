@@ -2,7 +2,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const RememberMeStrategy = require('passport-remember-me').Strategy;
 
-const randomString = require('../utils/utils');
+const { randomString } = require('../utils/utils');
 const {
   findById,
   findByEmail,

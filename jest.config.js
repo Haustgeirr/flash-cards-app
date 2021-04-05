@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 module.exports = {
-  collectCoverage: true,
+  collectCoverage: false,
   coveragePathIgnorePatterns: ['<rootDir>/__tests__/'],
   testEnvironment: 'node',
   testPathIgnorePatterns: [

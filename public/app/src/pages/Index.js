@@ -35,7 +35,7 @@ const IndexPage = () => {
         <div className='mt-6 md:mt-8 md:grid md:grid-cols-3 md:gap-8 lg:grid-cols-2 lg:gap-12'>
           <div className='text-left md:col-span-2 lg:col-span-1'>
             <h1 className='text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl'>
-              <span className='block bg-clip-text text-transparent bg-gradient-to-br from-gray-400 to-gray-800'>
+              <span className='block bg-clip-text text-transparent bg-gradient-to-br from-gray-500 to-gray-800'>
                 Need to remember stuff?
               </span>
               <span className='block'> Flash Cards!</span>
@@ -74,7 +74,7 @@ const IndexPage = () => {
               }
             >
               <Link
-                to='/decks/dashboard'
+                to='/decks'
                 className='relative py-4 pr-8 text-xl text-gray-900 font-semibold underline'
               >
                 Go to your decks

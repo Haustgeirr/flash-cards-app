@@ -64,8 +64,8 @@ const DeleteAccountModal = (props) => {
         </div>
       </div>
       <div className='px-4 py-4 sm:px-6 sm:pb-6'>
-        <div className=''>
-          <div className=''>
+        <div>
+          <div>
             <p className='text-sm text-gray-600'>
               Are you sure you want to delete your account? All of your data
               will be permanently removed. This action cannot be undone.

@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 
 import AuthenticatedRoute from './router/AuthenticatedRoute';
 
-// import './css/allstyles.css';
-import './css/main.css';
+import './css/allstyles.css';
+// import './css/main.css';
 
 const IndexPage = React.lazy(() => import('./pages/Index'));
 const SignInPage = React.lazy(() => import('./pages/SignIn'));
 const SignUpPage = React.lazy(() => import('./pages/SignUp'));
 const SignedOutPage = React.lazy(() => import('./pages/SignedOut'));
-const NavigationPage = React.lazy(() => import('./components/navBar/NavBar'));
+const NavigationPage = React.lazy(() => import('./pages/NavigationPage'));
 const NotFoundPage = React.lazy(() => import('./pages/404'));
 const AccountDeleted = React.lazy(() => import('./pages/AccountDeleted'));
 

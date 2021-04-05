@@ -1,4 +1,4 @@
-const Button = ({ className = 'btn', ...props }) => {
+const Button = ({ className = 'btn', children, ...props }) => {
   const { disabled, type, onClick } = props;
 
   return (
@@ -7,8 +7,9 @@ const Button = ({ className = 'btn', ...props }) => {
       type={type ? type : 'button'}
       className={className}
       onClick={onClick}
+      {...props}
     >
-      {props.children}
+      {children}
     </button>
   );
 };

@@ -1,14 +1,14 @@
 const sanitize = require('mongo-sanitize');
 
 const {
-  createNewUser,
+  addNewUser,
   findAndUpdateUser,
   removeUser,
   verifyUserPassword,
 } = require('../repos/userRepo');
 const { BadRequestError } = require('../utils/errors');
 
-const CreateUser = async (req, res, next) => {
+const createUser = async (req, res, next) => {
   try {
     const user = {
       name: sanitize(req.body.name),
@@ -16,7 +16,7 @@ const CreateUser = async (req, res, next) => {
       password: req.body.password,
     };
 
-    const response = await createNewUser(user);
+    const response = await addNewUser(user);
     res.locals.user = response;
     next();
   } catch (error) {
@@ -24,7 +24,7 @@ const CreateUser = async (req, res, next) => {
   }
 };
 
-const LoginUser = async (req, res) => {
+const signInUser = async (req, res) => {
   try {
     const user = {
       user: {
@@ -39,13 +39,13 @@ const LoginUser = async (req, res) => {
   }
 };
 
-const LogoutUser = async (req, res) => {
+const signOutUser = async (req, res) => {
   req.logout();
   res.clearCookie('remember_me');
   res.send();
 };
 
-const UpdateUser = async (req, res, next) => {
+const updateUser = async (req, res, next) => {
   const shapeUser = ({ name, email }) => {
     return {
       ...(name && sanitize({ name })),
@@ -65,7 +65,7 @@ const UpdateUser = async (req, res, next) => {
   }
 };
 
-const UpdatePassword = async (req, res, next) => {
+const updateUserPassword = async (req, res, next) => {
   const { id } = req.user;
   const {
     current_password: currentPassword,
@@ -86,10 +86,12 @@ const UpdatePassword = async (req, res, next) => {
   }
 };
 
-const DeleteUser = async (req, res, next) => {
+const deleteUser = async (req, res, next) => {
   const { id } = req.user;
   const { password } = req.body;
   try {
+    // remove all users' decks here
+
     const response = await removeUser(id, password);
     req.logout();
     res.clearCookie('remember_me');
@@ -100,10 +102,10 @@ const DeleteUser = async (req, res, next) => {
 };
 
 module.exports = {
-  CreateUser,
-  LoginUser,
-  LogoutUser,
-  UpdateUser,
-  UpdatePassword,
-  DeleteUser,
+  createUser,
+  signInUser,
+  signOutUser,
+  updateUser,
+  updateUserPassword,
+  deleteUser,
 };

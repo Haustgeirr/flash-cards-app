@@ -1,7 +1,7 @@
 const User = require('../models/userModel');
 const { BadRequestError } = require('../utils/errors');
 
-const createNewUser = async ({ name, email, password }) => {
+const addNewUser = async ({ name, email, password }) => {
   const userDocument = new User({
     name,
     email,
@@ -27,7 +27,7 @@ const findAndUpdateUser = async (id, updates) => {
     return { user: user.toJSON() };
   }
 
-  updateKeys.map((key) => {
+  updateKeys.forEach((key) => {
     user[key] = updates[key];
   });
 
@@ -68,7 +68,7 @@ const setRememberMeToken = async (user, token) => {
 };
 
 module.exports = {
-  createNewUser,
+  addNewUser,
   findById,
   findByEmail,
   findByToken,

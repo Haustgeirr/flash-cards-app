@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import * as actionCreators from '../redux/actionCreators';
+import * as actionCreators from '../redux/userActionCreators';
 import { signin } from '../api/users';
 
 import Logo from '../components/Logo';
@@ -40,7 +40,7 @@ const SignInPage = (props) => {
       if (res.user) {
         props.userSignIn(res.user);
         const { from } = location.state || {
-          from: { pathname: '/decks/dashboard' },
+          from: { pathname: '/decks' },
         };
         history.replace(from);
       }

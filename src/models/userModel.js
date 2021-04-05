@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const argon2 = require('argon2');
 
-const { BadRequestError, ServerError } = require('../utils/errors');
+const { BadRequestError } = require('../utils/errors');
 
 const userSchema = new mongoose.Schema(
   {
@@ -38,6 +38,12 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+userSchema.virtual('decks', {
+  ref: 'Deck',
+  localField: '_id',
+  foreignField: 'owner',
+});
 
 userSchema.methods.toJSON = function () {
   const user = this;
