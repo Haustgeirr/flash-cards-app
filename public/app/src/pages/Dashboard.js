@@ -1,26 +1,19 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import DeckCard from '../components/decks/DeckCard';
 import NewDeckButton from '../components/decks/NewDeckButton';
 import NewDeckModal from '../components/decks/NewDeckModal';
 import Modal from '../components/Modal';
 
-import { getUserDecksThunk } from '../redux/operators/decks';
-
 const DashboardPage = () => {
   const decks = useSelector((state) => state.decks.decks);
-  // const dispatch = useDispatch();
 
   const modal = useRef(null);
 
   const openModal = () => {
     modal.current.open();
   };
-
-  // useEffect(() => {
-  // dispatch(getUserDecksThunk());
-  // }, [dispatch]);
 
   return (
     <div>
