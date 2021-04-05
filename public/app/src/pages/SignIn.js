@@ -40,7 +40,7 @@ const SignInPage = (props) => {
       if (res.user) {
         props.userSignIn(res.user);
         const { from } = location.state || {
-          from: { pathname: '/decks/dashboard' },
+          from: { pathname: '/decks' },
         };
         history.replace(from);
       }

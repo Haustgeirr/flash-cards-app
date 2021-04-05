@@ -1,3 +1,5 @@
+const sanitize = require('mongo-sanitize');
+
 function randomString(length) {
   let buffer = [];
   let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ';
@@ -22,4 +24,15 @@ function isValidObjectId(id) {
   return false;
 }
 
-module.exports = { randomString, isValidObjectId };
+function sanitizeObject(object) {
+  const keys = Object.keys(object);
+  let sanitizedObject = {};
+
+  keys.forEach((key) => {
+    sanitizedObject[key] = sanitize(object[key]);
+  });
+
+  return sanitizedObject;
+}
+
+module.exports = { randomString, isValidObjectId, sanitizeObject };

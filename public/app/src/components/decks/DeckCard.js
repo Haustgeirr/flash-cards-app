@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import Button from '../input/Button';
 import HoverContentLink from '../input/HoverContentLink';
 import DeckOptionsButton from './DeckOptionsButton';
+import DeckOptionsLink from './DeckOptionsLink';
 
 import { deleteDeckThunk } from '../../redux/operators/decks';
 import useOnClickOutside from '../../hooks/useOnClickOutside';
@@ -12,7 +13,6 @@ const DeckCard = (props) => {
   const { deck } = props;
   const cardRef = useRef(null);
   const dispatch = useDispatch();
-  // const [isShowingBack, setShowingBack] = useState(false);
   const [isShowingBack, setShowingBack] = useOnClickOutside(cardRef, false);
 
   const onDeleteClick = () => {
@@ -90,7 +90,7 @@ const DeckCard = (props) => {
               </div>
             </div>
             <HoverContentLink
-              to={`/decks/${deck.id}`}
+              to={`/decks/${deck.id}/test`}
               disabled={isShowingBack}
               onHoverText='Start test'
               tabIndex={isShowingBack ? '-1' : ''}
@@ -147,8 +147,11 @@ const DeckCard = (props) => {
               </svg>
             </Button>
           </div>
-          <div className='px-8 py-3 space-y-1'>
-            <DeckOptionsButton disabled={!isShowingBack}>
+          <div className='px-8 py-3 flex flex-col space-y-1 '>
+            <DeckOptionsLink
+              disabled={!isShowingBack}
+              to={`/decks/${deck.id}/edit`}
+            >
               <svg
                 className='h-5 w-5'
                 xmlns='http://www.w3.org/2000/svg'
@@ -164,7 +167,7 @@ const DeckCard = (props) => {
                 />
               </svg>
               <span className='pl-3'>Edit</span>
-            </DeckOptionsButton>
+            </DeckOptionsLink>
             <DeckOptionsButton
               disabled={!isShowingBack}
               onClick={() => onDeleteClick()}

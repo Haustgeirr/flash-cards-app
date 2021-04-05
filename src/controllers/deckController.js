@@ -4,8 +4,10 @@ const {
   createNewDeck,
   findAllDecks,
   findDeck,
+  updateDeck,
   deleteDeck,
 } = require('../repos/deckRepo');
+const { sanitizeObject } = require('../utils/utils');
 
 const createDeck = async (req, res, next) => {
   try {
@@ -44,17 +46,33 @@ const getDeck = async (req, res, next) => {
   }
 };
 
-const deleteUserDeck = async (req, res, next) => {
+const editDeck = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const user = req.user;
+    const deck = await findDeck(id);
+    await updateDeck(deck, sanitizeObject(req.body));
 
-    await deleteDeck(id);
-    const decks = await findAllDecks(user.id);
-    res.status(200).send(decks);
+    res.status(200).send(deck.toJSON());
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { createDeck, getAllUserDecks, getDeck, deleteUserDeck };
+const deleteUserDeck = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const deck = await deleteDeck(id);
+    res.status(200).send(deck);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createDeck,
+  getAllUserDecks,
+  getDeck,
+  editDeck,
+  deleteUserDeck,
+};

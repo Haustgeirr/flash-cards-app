@@ -22,6 +22,15 @@ export const addNewDeck = async ({ name, description }) => {
   }
 };
 
+export const updateDeck = async (id, updates) => {
+  try {
+    const res = await baseUrl.patch(`/decks/${id}`, updates);
+    return res.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
+
 export const deleteDeck = async ({ id }) => {
   try {
     const response = await baseUrl.delete(`/decks/${id}`);

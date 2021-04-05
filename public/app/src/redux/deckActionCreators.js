@@ -19,25 +19,6 @@ const gettingDecksFailure = () => {
   };
 };
 
-const deletingDeck = () => {
-  return {
-    type: actions.DELETING_DECK,
-  };
-};
-
-const deletingDeckSuccess = (decks) => {
-  return {
-    type: actions.DELETING_DECK_SUCCESS,
-    decks,
-  };
-};
-
-const deletingDeckFailure = () => {
-  return {
-    type: actions.DELETING_DECK_FAILURE,
-  };
-};
-
 const addingDeck = () => {
   return {
     type: actions.ADDING_DECK,
@@ -57,6 +38,45 @@ const addingDeckFailure = () => {
   };
 };
 
+const updatingDeck = () => {
+  return {
+    type: actions.UPDATING_DECK,
+  };
+};
+
+const updatingDeckSuccess = (deck) => {
+  return {
+    type: actions.UPDATING_DECK_SUCCESS,
+    deck,
+  };
+};
+
+const updatingDeckFailure = (errors) => {
+  return {
+    type: actions.UPDATING_DECK_FAILURE,
+    errors,
+  };
+};
+
+const deletingDeck = () => {
+  return {
+    type: actions.DELETING_DECK,
+  };
+};
+
+const deletingDeckSuccess = (deck) => {
+  return {
+    type: actions.DELETING_DECK_SUCCESS,
+    deck,
+  };
+};
+
+const deletingDeckFailure = () => {
+  return {
+    type: actions.DELETING_DECK_FAILURE,
+  };
+};
+
 export {
   gettingDecks,
   gettingDecksSuccess,
@@ -67,4 +87,7 @@ export {
   addingDeck,
   addingDeckSuccess,
   addingDeckFailure,
+  updatingDeck,
+  updatingDeckSuccess,
+  updatingDeckFailure,
 };

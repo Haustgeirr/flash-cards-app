@@ -27,7 +27,7 @@ const findAndUpdateUser = async (id, updates) => {
     return { user: user.toJSON() };
   }
 
-  updateKeys.map((key) => {
+  updateKeys.forEach((key) => {
     user[key] = updates[key];
   });
 

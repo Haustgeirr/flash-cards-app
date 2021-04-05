@@ -1,18 +1,19 @@
 import React, { useRef } from 'react';
-import { connect } from 'react-redux';
-
-import NavBarLink from './NavBarLink';
-import ProfileMenuButton from '../navBar/profileMenu/ProfileMenuButton';
-import Logo from '../Logo';
-import MobileMenuButton from './MobileMenuButton';
-import MobileMenu from './MobileMenu';
 import { Route, Switch, useRouteMatch } from 'react-router';
 
-import useOnClickOutside from '../../hooks/useOnClickOutside';
-import DashboardPage from '../../pages/Dashboard';
-import ProfilePage from '../../pages/UserProfile';
+import GetDeckRoute from '../router/GetDeckRoute';
+import NavBarLink from '../components/navBar/NavBarLink';
+import ProfileMenuButton from '../components/navBar/profileMenu/ProfileMenuButton';
+import Logo from '../components/Logo';
+import MobileMenuButton from '../components/navBar/MobileMenuButton';
+import MobileMenu from '../components/navBar/MobileMenu';
+import useOnClickOutside from '../hooks/useOnClickOutside';
+import DashboardPage from './Dashboard';
+import ProfilePage from './UserProfile';
+import TestPage from './decks/TestPage';
+import EditPage from './decks/EditPage';
 
-const NavBar = () => {
+const NavigationPage = () => {
   const mobileMenuRef = useRef(null);
   const { path, url } = useRouteMatch();
   const [menuIsOpen, setMenuIsOpen] = useOnClickOutside(mobileMenuRef, false);
@@ -30,7 +31,7 @@ const NavBar = () => {
               </div>
               <div className='hidden sm:block'>
                 <div className='ml-10 flex items-baseline space-x-4'>
-                  <NavBarLink to={`${url}/dashboard`} text='Dashboard' />
+                  <NavBarLink to={`${url}`} text='Decks' />
                 </div>
               </div>
             </div>
@@ -51,9 +52,9 @@ const NavBar = () => {
       </nav>
       <div>
         <Switch>
-          <Route path={`${path}/dashboard`}>
-            <DashboardPage />
-          </Route>
+          <GetDeckRoute exact path={`${path}/`} component={DashboardPage} />
+          <GetDeckRoute path={`${path}/:id/test`} component={TestPage} />
+          <GetDeckRoute path={`${path}/:id/edit`} component={EditPage} />
           <Route exact path={`${path}/profile`}>
             <ProfilePage />
           </Route>
@@ -63,4 +64,4 @@ const NavBar = () => {
   );
 };
 
-export default connect()(NavBar);
+export default NavigationPage;

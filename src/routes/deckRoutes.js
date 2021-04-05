@@ -5,6 +5,7 @@ const {
   createDeck,
   getAllUserDecks,
   getDeck,
+  editDeck,
   deleteUserDeck,
 } = require('../controllers/deckController');
 const { createCard } = require('../controllers/cardController');
@@ -24,6 +25,10 @@ deckRouter.post('/', ensureAuthenticated, (req, res, next) =>
 
 deckRouter.get('/:id', ensureAuthenticated, (req, res, next) => {
   getDeck(req, res, next).catch((error) => next(new BadRequestError(error)));
+});
+
+deckRouter.patch('/:id', ensureAuthenticated, (req, res, next) => {
+  editDeck(req, res, next).catch((error) => next(new BadRequestError(error)));
 });
 
 deckRouter.delete('/:id', ensureAuthenticated, (req, res, next) => {

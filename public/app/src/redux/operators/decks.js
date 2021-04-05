@@ -20,6 +20,7 @@ const deleteDeckThunk = (deck) => {
       const response = await deleteDeck(deck);
       dispatch(actionCreators.deletingDeckSuccess(response));
     } catch (error) {
+      console.log(error);
       dispatch(actionCreators.deletingDeckFailure(error.message));
     }
   };
