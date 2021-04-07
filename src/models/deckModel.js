@@ -28,7 +28,7 @@ const deckSchema = new mongoose.Schema(
 deckSchema.virtual('cards', {
   ref: 'Card',
   localField: '_id',
-  foreignField: 'owner',
+  foreignField: 'deck',
 });
 
 deckSchema.methods.toJSON = function () {

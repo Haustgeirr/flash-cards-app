@@ -1,11 +1,8 @@
 const sanitize = require('mongo-sanitize');
 
-const {
-  addNewUser,
-  findAndUpdateUser,
-  removeUser,
-  verifyUserPassword,
-} = require('../repos/userRepo');
+const userRepo = require('../repos/userRepo');
+const deckRepo = require('../repos/deckRepo');
+
 const { BadRequestError } = require('../utils/errors');
 
 const createUser = async (req, res, next) => {
@@ -16,7 +13,7 @@ const createUser = async (req, res, next) => {
       password: req.body.password,
     };
 
-    const response = await addNewUser(user);
+    const response = await userRepo.addNewUser(user);
     res.locals.user = response;
     next();
   } catch (error) {
@@ -54,7 +51,10 @@ const updateUser = async (req, res, next) => {
   };
 
   try {
-    const response = await findAndUpdateUser(req.user.id, shapeUser(req.body));
+    const response = await userRepo.findAndUpdateUser(
+      req.user.id,
+      shapeUser(req.body)
+    );
     if (response.error) {
       throw new BadRequestError(response.error);
     }
@@ -73,8 +73,10 @@ const updateUserPassword = async (req, res, next) => {
   } = req.body;
 
   try {
-    await verifyUserPassword(id, currentPassword);
-    const response = await findAndUpdateUser(id, { password: newPassword });
+    await userRepo.verifyUserPassword(id, currentPassword);
+    const response = await userRepo.findAndUpdateUser(id, {
+      password: newPassword,
+    });
 
     if (response.errors) {
       throw new BadRequestError(response.error);
@@ -90,9 +92,12 @@ const deleteUser = async (req, res, next) => {
   const { id } = req.user;
   const { password } = req.body;
   try {
-    // remove all users' decks here
+    const decks = await deckRepo.findDecks({ owner: id });
+    decks.forEach(async (deck) => {
+      await deckRepo.deleteDeck(deck);
+    });
 
-    const response = await removeUser(id, password);
+    const response = await userRepo.removeUser(id, password);
     req.logout();
     res.clearCookie('remember_me');
     res.status(200).send(response);

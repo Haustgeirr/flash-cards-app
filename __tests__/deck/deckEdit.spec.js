@@ -4,7 +4,14 @@ const mongoose = require('mongoose');
 const app = require('../../src/app');
 const User = require('../../src/models/userModel');
 const Deck = require('../../src/models/deckModel');
-const { userOne, deckOne, deckOneId } = require('../fixtures/db');
+const {
+  userOne,
+  userTwo,
+  deckOne,
+  deckOneId,
+  deckTwo,
+  deckTwoId,
+} = require('../fixtures/db');
 
 afterAll(async (done) => {
   await User.deleteMany();
@@ -104,5 +111,29 @@ describe('PATCH / update Deck', () => {
 
   test('should receive 401 if unauthorized', async () => {
     await request(app).patch(`/api/v1/decks/${deckOneId}`).send({}).expect(401);
+  });
+});
+
+describe('POST / edit deck multiple users', () => {
+  beforeEach(async () => {
+    await User.deleteMany();
+    await Deck.deleteMany();
+    await new User(userOne).save();
+    await new User(userTwo).save();
+    await new Deck(deckOne).save();
+    await new Deck(deckTwo).save();
+  });
+
+  test('should status 401 if trying to edit unowned deck', async () => {
+    let agent = request.agent(app);
+    await agent.post('/api/v1/users/signin').send({
+      email: userOne.email,
+      password: userOne.password,
+    });
+
+    await agent
+      .patch(`/api/v1/decks/${deckTwoId}`)
+      .send({ name: '' })
+      .expect(401);
   });
 });

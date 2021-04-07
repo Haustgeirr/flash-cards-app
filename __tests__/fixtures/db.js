@@ -47,31 +47,35 @@ const deckThree = {
 const cardOneId = mongoose.Types.ObjectId();
 const cardOne = {
   _id: cardOneId,
-  owner: deckOneId,
-  name: 'Test Card One',
-  description: 'A short description',
+  owner: userOneId,
+  deck: deckOneId,
+  question: 'A Question',
+  answer: 'An Answer',
 };
 
 const cardTwoId = mongoose.Types.ObjectId();
 const cardTwo = {
   _id: cardTwoId,
-  owner: deckOneId,
-  name: 'Test Card Two',
-  description: 'A short description',
+  owner: userTwoId,
+  deck: deckTwoId,
+  question: 'A Second Question',
+  answer: 'A Second Answer',
 };
 const cardThreeId = mongoose.Types.ObjectId();
 const cardThree = {
   _id: cardThreeId,
-  owner: deckTwoId,
-  name: 'Test Card Three',
-  description: 'A short description',
+  owner: userTwoId,
+  deck: deckTwoId,
+  question: 'A Third Question',
+  answer: 'A Third Answer',
 };
 const cardFourId = mongoose.Types.ObjectId();
 const cardFour = {
   _id: cardFourId,
-  owner: deckTwoId,
-  name: 'Test Card Four',
-  description: 'A short description',
+  owner: userTwoId,
+  deck: deckThreeId,
+  question: 'A Fourth Question',
+  answer: 'A Fourth Answer',
 };
 
 module.exports = {

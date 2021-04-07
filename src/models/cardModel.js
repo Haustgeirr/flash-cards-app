@@ -6,10 +6,12 @@ const cardSchema = new mongoose.Schema(
   {
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      required: [
-        true,
-        'There was a problem with the server: Owner ID missing.',
-      ],
+      required: true,
+      ref: 'User',
+    },
+    deck: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
       ref: 'Deck',
     },
     question: {
@@ -41,20 +43,21 @@ cardSchema.post('save', (error, res, next) => {
     const errorKeys = Object.keys(error.errors);
     const shapedErrors = {};
 
-    errorKeys.map((key) => {
+    errorKeys.forEach((key) => {
       shapedErrors[key] = { message: error.errors[key].message };
     });
 
     next(new BadRequestError(shapedErrors));
+  } else {
+    next();
   }
-
-  next();
 });
 
 cardSchema.methods.toJSON = function () {
   const card = this;
   const cardJson = {
     id: card._id,
+    deck: card.deck,
     question: card.question,
     answer: card.answer,
   };

@@ -1,13 +1,8 @@
 const sanitize = require('mongo-sanitize');
 
-const {
-  createNewDeck,
-  findAllDecks,
-  findDeck,
-  updateDeck,
-  deleteDeck,
-} = require('../repos/deckRepo');
-const { sanitizeObject } = require('../utils/utils');
+const deckRepo = require('../repos/deckRepo');
+const cardRepo = require('../repos/cardRepo');
+const { sanitizeObject, throwIfUnownedByUser } = require('../utils/utils');
 
 const createDeck = async (req, res, next) => {
   try {
@@ -17,18 +12,19 @@ const createDeck = async (req, res, next) => {
       description: sanitize(req.body.description),
     };
 
-    const response = await createNewDeck(deck);
+    const response = await deckRepo.createNewDeck(deck);
     res.status(200).send(response);
   } catch (error) {
     next(error);
   }
 };
 
-const getAllUserDecks = async (req, res, next) => {
-  const user = req.user;
-
+const getAllDecks = async (req, res, next) => {
   try {
-    const decks = await findAllDecks(user.id);
+    const userId = req.user.id;
+    const decks = await deckRepo.findAllDecks(userId);
+
+    if (decks.length > 0) throwIfUnownedByUser(userId, decks[0].owner);
 
     res.status(200).send(decks);
   } catch (error) {
@@ -38,8 +34,10 @@ const getAllUserDecks = async (req, res, next) => {
 
 const getDeck = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const deck = await findDeck(id);
+    const deckId = req.params.deckId;
+    const deck = await deckRepo.findDeckById(deckId);
+
+    throwIfUnownedByUser(req.user.id, deck.owner);
     res.status(200).send(deck);
   } catch (error) {
     next(error);
@@ -48,21 +46,30 @@ const getDeck = async (req, res, next) => {
 
 const editDeck = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const deck = await findDeck(id);
-    await updateDeck(deck, sanitizeObject(req.body));
+    const deckId = req.params.deckId;
+    const deck = await deckRepo.findDeckById(deckId);
 
+    throwIfUnownedByUser(req.user.id, deck.owner);
+    await deckRepo.updateDeck(deck, sanitizeObject(req.body));
     res.status(200).send(deck.toJSON());
   } catch (error) {
     next(error);
   }
 };
 
-const deleteUserDeck = async (req, res, next) => {
+const deleteDeck = async (req, res, next) => {
   try {
-    const id = req.params.id;
+    const deckId = req.params.deckId;
+    const deck = await deckRepo.findDeckById(deckId);
 
-    const deck = await deleteDeck(id);
+    throwIfUnownedByUser(req.user.id, deck.owner);
+
+    const cards = await cardRepo.findCards({ deck: deckId });
+    cards.forEach(async (card) => {
+      await cardRepo.deleteCard(card);
+    });
+
+    await deckRepo.deleteDeck(deck);
     res.status(200).send(deck);
   } catch (error) {
     next(error);
@@ -71,8 +78,8 @@ const deleteUserDeck = async (req, res, next) => {
 
 module.exports = {
   createDeck,
-  getAllUserDecks,
+  getAllDecks,
   getDeck,
   editDeck,
-  deleteUserDeck,
+  deleteDeck,
 };

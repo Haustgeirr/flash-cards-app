@@ -6,4 +6,12 @@ class BadRequestError extends Error {
   }
 }
 
-module.exports = { BadRequestError };
+class UnauthorizedError extends Error {
+  constructor(error) {
+    super(error.message);
+    this.errors = error;
+    this.statusCode = 401;
+  }
+}
+
+module.exports = { BadRequestError, UnauthorizedError };

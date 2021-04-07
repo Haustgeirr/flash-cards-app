@@ -9,10 +9,20 @@ const createNewDeck = async (deck) => {
   return await deckDocument.save();
 };
 
-const findDeck = async (id) => {
+const findDecks = async (filter) => {
+  try {
+    const decks = await Deck.find(filter);
+    return decks;
+  } catch (error) {
+    return error;
+  }
+};
+
+const findDeckById = async (id) => {
   if (!isValidObjectId(id)) {
     throw new BadRequestError({ id: { message: 'Deck ID is not valid' } });
   }
+
   const deck = await Deck.findById(id).exec();
 
   if (!deck)
@@ -39,7 +49,6 @@ const findAllDecks = async (userId) => {
 
 const updateDeck = async (deck, updates) => {
   const updateKeys = Object.keys(updates);
-  // const deck = await findDeck(id);
 
   if (updates.length === 0) {
     return { deck: deck.toJSON() };
@@ -53,9 +62,8 @@ const updateDeck = async (deck, updates) => {
   return { deck: deck.toJSON() };
 };
 
-const deleteDeck = async (id) => {
+const deleteDeck = async (deck) => {
   try {
-    const deck = await findDeck(id);
     await deck.remove();
     return deck.toJSON();
   } catch (error) {
@@ -65,7 +73,8 @@ const deleteDeck = async (id) => {
 };
 
 module.exports = {
-  findDeck,
+  findDecks,
+  findDeckById,
   createNewDeck,
   findAllDecks,
   updateDeck,

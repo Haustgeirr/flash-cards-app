@@ -1,4 +1,5 @@
 const sanitize = require('mongo-sanitize');
+const { UnauthorizedError } = require('../utils/errors');
 
 function randomString(length) {
   let buffer = [];
@@ -18,9 +19,14 @@ function getRandomInt(min, max) {
 const ObjectId = require('mongoose').Types.ObjectId;
 
 function isValidObjectId(id) {
+  if (typeof id === ObjectId) {
+    return true;
+  }
+
   if (String(new ObjectId(id)) === id) {
     return true;
   }
+
   return false;
 }
 
@@ -35,4 +41,17 @@ function sanitizeObject(object) {
   return sanitizedObject;
 }
 
-module.exports = { randomString, isValidObjectId, sanitizeObject };
+function throwIfUnownedByUser(userObjectId, documentObjecyId) {
+  if (!userObjectId.equals(documentObjecyId)) {
+    throw new UnauthorizedError({
+      user: { message: 'Unauthorized' },
+    });
+  }
+}
+
+module.exports = {
+  randomString,
+  throwIfUnownedByUser,
+  isValidObjectId,
+  sanitizeObject,
+};

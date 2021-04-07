@@ -142,19 +142,15 @@ describe('GET / decks for different users', () => {
     await new User(userTwo).save();
     await new Deck(deckOne).save();
     await new Deck(deckTwo).save();
-    await new Deck(deckThree).save();
   });
 
-  test('should not get another user decks', async () => {
+  test('should status 401 when get unowned deck', async () => {
     let agent = request.agent(app);
     await agent.post('/api/v1/users/signin').send({
       email: userOne.email,
       password: userOne.password,
     });
 
-    const user = await User.findById(userOneId);
-    await user.populate('decks').execPopulate();
-
-    expect(user.decks.length).toBe(1);
+    agent.get(`/api/v1/decks/${deckTwoId}`).expect(401);
   });
 });
