@@ -50,8 +50,8 @@ const findAllDecks = async (userId) => {
 const updateDeck = async (deck, updates) => {
   const updateKeys = Object.keys(updates);
 
-  if (updates.length === 0) {
-    return { deck: deck.toJSON() };
+  if (updateKeys.length === 0) {
+    return deck.toJSON();
   }
 
   updateKeys.forEach((key) => {
@@ -59,7 +59,7 @@ const updateDeck = async (deck, updates) => {
   });
 
   await deck.save();
-  return { deck: deck.toJSON() };
+  return deck.toJSON();
 };
 
 const deleteDeck = async (deck) => {

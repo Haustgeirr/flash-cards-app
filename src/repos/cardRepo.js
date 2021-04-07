@@ -52,16 +52,18 @@ const findAllCardsByDeckId = async (deckID) => {
 };
 
 const updateCard = async (card, updates) => {
-  if (updates.length === 0) {
-    return { card: card.toJSON() };
+  const updateKeys = Object.keys(updates);
+
+  if (updateKeys.length === 0) {
+    return card.toJSON();
   }
 
   updateKeys.forEach((key) => {
     card[key] = updates[key];
   });
 
-  await deck.save();
-  return { deck: deck.toJSON() };
+  await card.save();
+  return card.toJSON();
 };
 
 const deleteCard = async (card) => {
